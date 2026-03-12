@@ -154,3 +154,37 @@ body {
   padding: 0.3rem 0;
   color: #555;
 }
+
+/* Mini version for host dashboard panels */
+.wiki-content-mini {
+  padding: 0.75rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.wiki-content-mini h2 {
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.wiki-content-mini h3 {
+  font-size: 0.8rem;
+}
+
+.wiki-content-mini .infobox {
+  max-width: 180px;
+  font-size: 0.65rem;
+}
+
+.wiki-content-mini img {
+  max-width: 150px;
+}
+
+.wiki-content-mini .thumb {
+  margin: 0.25rem;
+}
+
+.wiki-content-mini .reflist,
+.wiki-content-mini .references {
+  display: none;
+}

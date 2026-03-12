@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 
 interface WikiArticleProps {
   html: string;
@@ -8,7 +8,7 @@ interface WikiArticleProps {
   loading?: boolean;
 }
 
-export default function WikiArticle({
+const WikiArticle = memo(function WikiArticle({
   html,
   onNavigate,
   loading,
@@ -47,4 +47,6 @@ export default function WikiArticle({
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
-}
+});
+
+export default WikiArticle;
