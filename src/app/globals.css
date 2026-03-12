@@ -1,26 +1,156 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --card-border: #334155;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --success: #22c55e;
+  --gold: #eab308;
+  --silver: #94a3b8;
+  --bronze: #d97706;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Wikipedia article styling */
+.wiki-content {
+  background: #ffffff;
+  color: #202122;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.wiki-content a[data-wiki-slug] {
+  color: #3366cc;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.wiki-content a[data-wiki-slug]:hover {
+  text-decoration: underline;
+}
+
+.wiki-content a:not([data-wiki-slug]) {
+  color: #7c8899;
+  pointer-events: none;
+  text-decoration: none;
+}
+
+.wiki-content a[target="_blank"] {
+  color: #7c8899;
+  pointer-events: none;
+}
+
+.wiki-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wiki-content table {
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.wiki-content .infobox {
+  float: right;
+  margin: 0 0 1rem 1rem;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  background: #f8f9fa;
+}
+
+.wiki-content .infobox td,
+.wiki-content .infobox th {
+  padding: 0.2rem 0.4rem;
+  vertical-align: top;
+}
+
+.wiki-content .thumb {
+  margin: 0.5rem;
+  text-align: center;
+}
+
+.wiki-content .thumbinner {
+  border: 1px solid #ccc;
+  padding: 3px;
+  background: #f8f9fa;
+  font-size: 0.8rem;
+}
+
+.wiki-content .thumbcaption {
+  padding: 3px;
+  font-size: 0.8rem;
+}
+
+.wiki-content .mw-headline {
+  font-weight: bold;
+}
+
+.wiki-content h2 {
+  font-size: 1.3rem;
+  border-bottom: 1px solid #a2a9b1;
+  padding-bottom: 0.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.wiki-content h3 {
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.wiki-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0.3rem 0;
+}
+
+.wiki-content ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0.3rem 0;
+}
+
+.wiki-content .reflist {
+  font-size: 0.75rem;
+}
+
+.wiki-content sup.reference {
+  font-size: 0.7rem;
+}
+
+.wiki-content .toc {
+  display: none;
+}
+
+.wiki-content .mw-parser-output > .hatnote {
+  font-style: italic;
+  padding: 0.3rem 0;
+  color: #555;
 }
