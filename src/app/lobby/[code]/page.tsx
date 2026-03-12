@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, use } from "react";
+import { useState, useEffect, useCallback, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import ArticleSearch from "@/components/ArticleSearch";
 import { Lobby } from "@/lib/types";
@@ -23,11 +23,17 @@ export default function LobbyPage({
     slug: string;
   } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [playerId, setPlayerId] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
 
-  const playerId =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("playerId")
-      : null;
+  // Track whether articles were set locally by the host (to avoid polling overwrite)
+  const localArticlesRef = useRef(false);
+
+  // Load playerId from sessionStorage on mount
+  useEffect(() => {
+    setPlayerId(sessionStorage.getItem("playerId"));
+  }, []);
+
   const isHost = lobby?.hostId === playerId;
 
   const fetchLobby = useCallback(async () => {
@@ -42,19 +48,23 @@ export default function LobbyPage({
 
       if (data.state === "playing") {
         router.push(`/game/${code}`);
+        return;
       }
 
-      if (data.startArticle && data.startArticleTitle) {
-        setStartArticle({
-          title: data.startArticleTitle,
-          slug: data.startArticle,
-        });
-      }
-      if (data.endArticle && data.endArticleTitle) {
-        setEndArticle({
-          title: data.endArticleTitle,
-          slug: data.endArticle,
-        });
+      // Only sync articles from Redis if the host hasn't set them locally
+      if (!localArticlesRef.current) {
+        if (data.startArticle && data.startArticleTitle) {
+          setStartArticle({
+            title: data.startArticleTitle,
+            slug: data.startArticle,
+          });
+        }
+        if (data.endArticle && data.endArticleTitle) {
+          setEndArticle({
+            title: data.endArticleTitle,
+            slug: data.endArticle,
+          });
+        }
       }
     } catch {
       setError("Kunne ikke hente lobby");
@@ -67,36 +77,43 @@ export default function LobbyPage({
     return () => clearInterval(interval);
   }, [fetchLobby]);
 
-  async function handleSetArticles(
-    start: { title: string; slug: string } | null,
-    end: { title: string; slug: string } | null
-  ) {
-    if (!start || !end || !playerId) return;
-    await fetch(`/api/lobby/${code}/config`, {
+  // Save articles to Redis whenever both are set
+  useEffect(() => {
+    if (!startArticle || !endArticle || !playerId || !isHost) return;
+
+    fetch(`/api/lobby/${code}/config`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         playerId,
-        startArticle: start.slug,
-        startTitle: start.title,
-        endArticle: end.slug,
-        endTitle: end.title,
+        startArticle: startArticle.slug,
+        startTitle: startArticle.title,
+        endArticle: endArticle.slug,
+        endTitle: endArticle.title,
       }),
-    });
-  }
+    }).catch(() => {});
+  }, [startArticle, endArticle, playerId, isHost, code]);
 
   async function handleStart() {
-    if (!playerId) return;
-    const res = await fetch(`/api/lobby/${code}/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId }),
-    });
-    if (res.ok) {
-      router.push(`/game/${code}`);
-    } else {
-      const data = await res.json();
-      setError(data.error);
+    if (!playerId || starting) return;
+    setStarting(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/lobby/${code}/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId }),
+      });
+      if (res.ok) {
+        router.push(`/game/${code}`);
+      } else {
+        const data = await res.json();
+        setError(data.error);
+        setStarting(false);
+      }
+    } catch {
+      setError("Kunne ikke starte spillet");
+      setStarting(false);
     }
   }
 
@@ -122,7 +139,7 @@ export default function LobbyPage({
     );
   }
 
-  if (!lobby) {
+  if (!lobby || playerId === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin" />
@@ -189,7 +206,7 @@ export default function LobbyPage({
               value={startArticle}
               onSelect={(v) => {
                 setStartArticle(v);
-                if (v && endArticle) handleSetArticles(v, endArticle);
+                if (v) localArticlesRef.current = true;
               }}
             />
             <ArticleSearch
@@ -197,15 +214,15 @@ export default function LobbyPage({
               value={endArticle}
               onSelect={(v) => {
                 setEndArticle(v);
-                if (startArticle && v) handleSetArticles(startArticle, v);
+                if (v) localArticlesRef.current = true;
               }}
             />
             <button
               onClick={handleStart}
-              disabled={!startArticle || !endArticle}
+              disabled={!startArticle || !endArticle || starting}
               className="w-full bg-success hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-colors mt-4 text-lg"
             >
-              Start spill
+              {starting ? "Starter..." : "Start spill"}
             </button>
           </div>
         ) : (
