@@ -47,9 +47,9 @@ export async function POST(
     player.finishTime = Date.now() - (lobby.gameStartTime || 0);
   }
 
-  // Check if all non-host players finished
+  // Check if all playing players finished (skip spectating host)
   const allFinished = lobby.players
-    .filter((p) => !p.isHost)
+    .filter((p) => !(p.isHost && !lobby.hostPlaying))
     .every((p) => p.finished);
   if (allFinished) {
     lobby.state = "finished";

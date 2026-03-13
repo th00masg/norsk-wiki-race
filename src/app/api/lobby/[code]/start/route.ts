@@ -30,9 +30,9 @@ export async function POST(
   lobby.state = "playing";
   lobby.gameStartTime = Date.now();
 
-  // Set all non-host players to start article
+  // Set players to start article (skip host unless hostPlaying)
   for (const player of lobby.players) {
-    if (player.isHost) continue;
+    if (player.isHost && !lobby.hostPlaying) continue;
     player.currentArticle = lobby.startArticle;
     player.clickCount = 0;
     player.finished = false;

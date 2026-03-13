@@ -6,7 +6,7 @@ export async function POST(
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
-  const { playerId, startArticle, startTitle, endArticle, endTitle } =
+  const { playerId, startArticle, startTitle, endArticle, endTitle, hostPlaying } =
     await request.json();
 
   const lobby = await getLobby(code.toUpperCase());
@@ -25,6 +25,9 @@ export async function POST(
   lobby.startArticleTitle = startTitle;
   lobby.endArticle = endArticle;
   lobby.endArticleTitle = endTitle;
+  if (hostPlaying !== undefined) {
+    lobby.hostPlaying = hostPlaying;
+  }
 
   await setLobby(lobby);
 

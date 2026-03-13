@@ -25,6 +25,7 @@ export interface Lobby {
   startArticleTitle: string | null;
   endArticleTitle: string | null;
   gameStartTime: number | null;
+  hostPlaying?: boolean;
   emojis?: EmojiReaction[];
 }
 

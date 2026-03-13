@@ -75,6 +75,7 @@ export default function LobbyPage({
   const [copied, setCopied] = useState(false);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [hostPlaying, setHostPlaying] = useState(false);
   const [flyingEmojis, setFlyingEmojis] = useState<FlyingEmoji[]>([]);
   const [emojiCooldown, setEmojiCooldown] = useState(false);
 
@@ -159,9 +160,10 @@ export default function LobbyPage({
         startTitle: startArticle.title,
         endArticle: endArticle.slug,
         endTitle: endArticle.title,
+        hostPlaying,
       }),
     }).catch(() => {});
-  }, [startArticle, endArticle, playerId, isHost, code]);
+  }, [startArticle, endArticle, playerId, isHost, code, hostPlaying]);
 
   async function handleStart() {
     if (!playerId || starting) return;
@@ -415,6 +417,15 @@ export default function LobbyPage({
               Velg start- og målartikkel først
             </p>
           )}
+          <button
+            onClick={() => setHostPlaying((v) => !v)}
+            className="mt-4 flex items-center gap-2 text-sm font-[var(--font-fredoka)] text-foreground/60 hover:text-foreground transition-colors"
+          >
+            <div className={`w-10 h-5 rounded-full transition-colors relative ${hostPlaying ? "bg-lime/60" : "bg-card-border"}`}>
+              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${hostPlaying ? "left-5" : "left-0.5"}`} />
+            </div>
+            {hostPlaying ? "Spiller med" : "Kun tilskuer"}
+          </button>
         </div>
       </div>
     </div>

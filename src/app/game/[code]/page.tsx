@@ -23,6 +23,7 @@ interface GameState {
   endArticle: string | null;
   endArticleTitle: string | null;
   gameStartTime: number | null;
+  hostPlaying: boolean;
 }
 
 const CONFETTI_COLORS = ["#ff6bcd", "#00e5ff", "#39ff14", "#ff9100", "#ffd700", "#e040fb"];
@@ -80,9 +81,11 @@ export default function GamePage({
   }, []);
 
   const isHost = gameState?.players.find((p) => p.id === playerId)?.isHost ?? false;
+  const hostPlaying = gameState?.hostPlaying ?? false;
+  const isSpectator = isHost && !hostPlaying;
 
   const gamePlayers = gameState
-    ? gameState.players.filter((p) => !p.isHost)
+    ? gameState.players.filter((p) => !(p.isHost && !hostPlaying))
     : [];
 
   const fetchArticle = useCallback(async (slug: string) => {
@@ -115,7 +118,8 @@ export default function GamePage({
       }
 
       const me = data.players.find((p) => p.id === playerId);
-      if (me && !me.isHost) {
+      const meIsPlaying = me && (!me.isHost || data.hostPlaying);
+      if (meIsPlaying) {
         setClickCount(me.clickCount);
         setFinished(me.finished);
         if (me.currentArticle) {
@@ -296,8 +300,8 @@ export default function GamePage({
     );
   }
 
-  // ========== HOST DASHBOARD ==========
-  if (isHost) {
+  // ========== HOST DASHBOARD (spectator mode) ==========
+  if (isSpectator) {
     const playerCount = gamePlayers.length;
     const cols =
       playerCount <= 1

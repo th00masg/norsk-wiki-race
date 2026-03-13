@@ -28,5 +28,6 @@ export async function GET(
     endArticle: lobby.endArticle,
     endArticleTitle: lobby.endArticleTitle,
     gameStartTime: lobby.gameStartTime,
+    hostPlaying: lobby.hostPlaying ?? false,
   });
 }
