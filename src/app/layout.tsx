@@ -4,12 +4,12 @@ import "./globals.css";
 
 const fredoka = Fredoka({
   variable: "--font-fredoka",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["400", "700"],
 });
 
