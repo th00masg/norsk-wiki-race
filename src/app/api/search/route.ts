@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { WIKI_HEADERS } from "@/lib/wiki-proxy";
 
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q");
@@ -7,7 +8,8 @@ export async function GET(request: NextRequest) {
   }
 
   const res = await fetch(
-    `https://no.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(q)}&limit=8&namespace=0&format=json`
+    `https://no.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(q)}&limit=8&namespace=0&format=json`,
+    { headers: WIKI_HEADERS }
   );
 
   if (!res.ok) {

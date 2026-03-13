@@ -73,7 +73,7 @@ export default function PlayerPanel({
         <iframe
           src={frameUrl}
           className="w-full h-full border-0 bg-white"
-          sandbox="allow-same-origin"
+          sandbox="allow-same-origin allow-scripts"
           title={`${name} sin artikkel`}
         />
       </div>

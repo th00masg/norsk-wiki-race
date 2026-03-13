@@ -13,6 +13,11 @@ const SPECIAL_NAMESPACES = [
   "MediaWiki:",
 ];
 
+export const WIKI_HEADERS = {
+  "User-Agent": "NorskWikiRace/1.0 (https://norsk-wiki-race.vercel.app; wiki-race game)",
+  "Accept": "application/json",
+};
+
 /**
  * Fetch raw article HTML from Wikipedia API and do basic cleanup.
  * Shared by both player and host routes.
@@ -22,7 +27,7 @@ export async function fetchArticleHtml(
 ): Promise<{ html: string; title: string }> {
   const url = `https://no.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(slug)}&prop=text|displaytitle&format=json&disableeditsection=1`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: WIKI_HEADERS });
   if (!res.ok) {
     throw new Error(`Wikipedia API error: ${res.status}`);
   }
