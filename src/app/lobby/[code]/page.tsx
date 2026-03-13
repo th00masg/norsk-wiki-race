@@ -3,9 +3,57 @@
 import { useState, useEffect, useCallback, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import ArticleSearch from "@/components/ArticleSearch";
-import { Lobby } from "@/lib/types";
+import { Lobby, EmojiReaction } from "@/lib/types";
 
 const PLAYER_COLORS = ["text-pink", "text-cyan", "text-lime", "text-orange", "text-gold", "text-purple-400"];
+const EMOJI_OPTIONS = ["🎉", "🔥", "😂", "🏆", "💀", "🚀", "👀", "🎂"];
+
+interface FlyingEmoji {
+  id: string;
+  emoji: string;
+  playerName: string;
+  left: number;
+}
+
+function FlyingEmojis({ emojis }: { emojis: FlyingEmoji[] }) {
+  return (
+    <>
+      {emojis.map((e) => (
+        <div
+          key={e.id}
+          className="flying-emoji"
+          style={{ left: `${e.left}%` }}
+        >
+          <span className="emoji-char">{e.emoji}</span>
+          <span className="emoji-name">{e.playerName}</span>
+        </div>
+      ))}
+    </>
+  );
+}
+
+function EmojiPicker({
+  onSend,
+  disabled,
+}: {
+  onSend: (emoji: string) => void;
+  disabled: boolean;
+}) {
+  return (
+    <div className="flex gap-2 flex-wrap justify-center">
+      {EMOJI_OPTIONS.map((emoji) => (
+        <button
+          key={emoji}
+          onClick={() => onSend(emoji)}
+          disabled={disabled}
+          className="text-2xl hover:scale-125 active:scale-90 transition-transform disabled:opacity-30 disabled:hover:scale-100"
+        >
+          {emoji}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function LobbyPage({
   params,
@@ -27,8 +75,11 @@ export default function LobbyPage({
   const [copied, setCopied] = useState(false);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [flyingEmojis, setFlyingEmojis] = useState<FlyingEmoji[]>([]);
+  const [emojiCooldown, setEmojiCooldown] = useState(false);
 
   const localArticlesRef = useRef(false);
+  const seenEmojiIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     setPlayerId(sessionStorage.getItem("playerId"));
@@ -39,9 +90,9 @@ export default function LobbyPage({
   const fetchLobby = useCallback(async () => {
     try {
       const res = await fetch(`/api/lobby/${code}`);
-      const data = await res.json();
+      const data: Lobby = await res.json();
       if (!res.ok) {
-        setError(data.error);
+        setError((data as unknown as { error: string }).error);
         return;
       }
       setLobby(data);
@@ -65,6 +116,26 @@ export default function LobbyPage({
           });
         }
       }
+
+      // Process new emojis
+      const newEmojis = (data.emojis || []).filter(
+        (e: EmojiReaction) => !seenEmojiIdsRef.current.has(e.id)
+      );
+      if (newEmojis.length > 0) {
+        const flying = newEmojis.map((e: EmojiReaction) => ({
+          id: e.id,
+          emoji: e.emoji,
+          playerName: e.playerName,
+          left: 10 + Math.random() * 80,
+        }));
+        newEmojis.forEach((e: EmojiReaction) => seenEmojiIdsRef.current.add(e.id));
+        setFlyingEmojis((prev) => [...prev, ...flying]);
+        // Remove after animation (3s)
+        setTimeout(() => {
+          const ids = new Set(flying.map((f: FlyingEmoji) => f.id));
+          setFlyingEmojis((prev) => prev.filter((f) => !ids.has(f.id)));
+        }, 3500);
+      }
     } catch {
       setError("Kunne ikke hente lobby");
     }
@@ -72,7 +143,7 @@ export default function LobbyPage({
 
   useEffect(() => {
     fetchLobby();
-    const interval = setInterval(fetchLobby, 3000);
+    const interval = setInterval(fetchLobby, 2000);
     return () => clearInterval(interval);
   }, [fetchLobby]);
 
@@ -115,6 +186,22 @@ export default function LobbyPage({
     }
   }
 
+  async function handleSendEmoji(emoji: string) {
+    if (!playerId || emojiCooldown) return;
+    setEmojiCooldown(true);
+    setTimeout(() => setEmojiCooldown(false), 500);
+
+    try {
+      await fetch(`/api/lobby/${code}/emoji`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId, emoji }),
+      });
+    } catch {
+      // ignore
+    }
+  }
+
   function copyCode() {
     navigator.clipboard.writeText(code.toUpperCase());
     setCopied(true);
@@ -149,6 +236,7 @@ export default function LobbyPage({
   if (!isHost) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
+        <FlyingEmojis emojis={flyingEmojis} />
         <div className="w-full max-w-xl">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-[var(--font-fredoka)] font-bold mb-3 title-gradient">
@@ -207,6 +295,14 @@ export default function LobbyPage({
               </p>
             )}
           </div>
+
+          {/* Emoji picker */}
+          <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-4 mt-4 text-center">
+            <p className="text-foreground/40 text-xs mb-2 font-[var(--font-fredoka)]">
+              Send en reaksjon!
+            </p>
+            <EmojiPicker onSend={handleSendEmoji} disabled={emojiCooldown} />
+          </div>
         </div>
       </div>
     );
@@ -215,6 +311,8 @@ export default function LobbyPage({
   // ===== HOST VIEW =====
   return (
     <div className="min-h-screen flex flex-col items-center p-6">
+      <FlyingEmojis emojis={flyingEmojis} />
+
       {/* Header: title + code on left, QR on right */}
       <div className="w-full max-w-5xl flex items-center justify-between mb-8">
         <div>
