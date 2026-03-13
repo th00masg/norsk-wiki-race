@@ -145,103 +145,46 @@ export default function LobbyPage({
     );
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-xl">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-[var(--font-fredoka)] font-bold mb-3 title-gradient">
-            Venteomradet
-          </h1>
-          <div className="flex items-center justify-center gap-3">
+  // ===== NON-HOST VIEW =====
+  if (!isHost) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-xl">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-[var(--font-fredoka)] font-bold mb-3 title-gradient">
+              Venteområdet
+            </h1>
             <span className="lobby-code font-[var(--font-space-mono)] text-4xl tracking-[0.3em] text-pink font-bold">
               {code.toUpperCase()}
             </span>
-            <button
-              onClick={copyCode}
-              className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-[var(--font-fredoka)]"
-            >
-              {copied ? "Kopiert!" : "Kopier"}
-            </button>
           </div>
-          <p className="text-foreground/40 text-sm mt-2 font-[var(--font-fredoka)]">
-            Del koden med de andre gjestene!
-          </p>
-          {isHost && (
-            <div className="mt-4">
-              <img
-                src="/qr.png"
-                alt="QR-kode til spillet"
-                className="mx-auto w-40 h-40 rounded-xl border-2 border-card-border"
-              />
-              <p className="text-foreground/30 text-xs mt-1 font-[var(--font-fredoka)]">
-                Skann for a bli med!
-              </p>
-            </div>
-          )}
-        </div>
 
-        {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-xl px-4 py-2 mb-4 text-red-300 text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 mb-4">
-          <h2 className="text-lg font-[var(--font-fredoka)] font-semibold mb-3 text-cyan">
-            Spillere ({lobby.players.length})
-          </h2>
-          <div className="space-y-2">
-            {lobby.players.map((p, i) => (
-              <div
-                key={p.id}
-                className={`flex items-center gap-2 bg-background/30 rounded-xl px-4 py-2.5 player-color-${i % 6}`}
-              >
-                <span className={`flex-1 font-[var(--font-fredoka)] font-medium ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
-                  {p.name}
-                </span>
-                {p.isHost && (
-                  <span className="text-xs bg-pink/20 text-pink px-2.5 py-0.5 rounded-full font-[var(--font-fredoka)]">
-                    Vert
-                  </span>
-                )}
-                {p.id === playerId && (
-                  <span className="text-xs text-foreground/30">(deg)</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {isHost ? (
-          <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 mb-4 glow-pink">
-            <h2 className="text-lg font-[var(--font-fredoka)] font-semibold mb-3 text-pink">
-              Velg artikler
+          <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 mb-4">
+            <h2 className="text-lg font-[var(--font-fredoka)] font-semibold mb-3 text-cyan">
+              Spillere ({lobby.players.length})
             </h2>
-            <ArticleSearch
-              label="Startartikkel"
-              value={startArticle}
-              onSelect={(v) => {
-                setStartArticle(v);
-                if (v) localArticlesRef.current = true;
-              }}
-            />
-            <ArticleSearch
-              label="Malartikkel"
-              value={endArticle}
-              onSelect={(v) => {
-                setEndArticle(v);
-                if (v) localArticlesRef.current = true;
-              }}
-            />
-            <button
-              onClick={handleStart}
-              disabled={!startArticle || !endArticle || starting}
-              className="w-full btn-go py-3.5 rounded-xl mt-4 text-lg font-[var(--font-fredoka)]"
-            >
-              {starting ? "Starter..." : "KJOR!"}
-            </button>
+            <div className="space-y-2">
+              {lobby.players.map((p, i) => (
+                <div
+                  key={p.id}
+                  className={`flex items-center gap-2 bg-background/30 rounded-xl px-4 py-2.5 player-color-${i % 6}`}
+                >
+                  <span className={`flex-1 font-[var(--font-fredoka)] font-medium ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+                    {p.name}
+                  </span>
+                  {p.isHost && (
+                    <span className="text-xs bg-pink/20 text-pink px-2.5 py-0.5 rounded-full font-[var(--font-fredoka)]">
+                      Vert
+                    </span>
+                  )}
+                  {p.id === playerId && (
+                    <span className="text-xs text-foreground/30">(deg)</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        ) : (
+
           <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 text-center">
             {lobby.startArticleTitle && lobby.endArticleTitle ? (
               <div>
@@ -260,11 +203,119 @@ export default function LobbyPage({
               </div>
             ) : (
               <p className="text-foreground/40 font-[var(--font-fredoka)]">
-                Venter pa at verten velger artikler...
+                Venter på at verten velger artikler...
               </p>
             )}
           </div>
-        )}
+        </div>
+      </div>
+    );
+  }
+
+  // ===== HOST VIEW =====
+  return (
+    <div className="min-h-screen flex flex-col items-center p-6">
+      {/* Header: title + code + QR */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-[var(--font-fredoka)] font-bold mb-2 title-gradient">
+          Venteområdet
+        </h1>
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <span className="lobby-code font-[var(--font-space-mono)] text-5xl tracking-[0.3em] text-pink font-bold">
+            {code.toUpperCase()}
+          </span>
+          <button
+            onClick={copyCode}
+            className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-[var(--font-fredoka)]"
+          >
+            {copied ? "Kopiert!" : "Kopier"}
+          </button>
+        </div>
+        <p className="text-foreground/40 text-sm font-[var(--font-fredoka)]">
+          Del koden med de andre gjestene!
+        </p>
+        <div className="mt-4">
+          <img
+            src="/qr.png"
+            alt="QR-kode til spillet"
+            className="mx-auto w-44 h-44 rounded-xl border-2 border-card-border"
+          />
+          <p className="text-foreground/30 text-xs mt-1 font-[var(--font-fredoka)]">
+            Skann for å bli med!
+          </p>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-500/20 border border-red-500/50 rounded-xl px-4 py-2 mb-4 text-red-300 text-sm w-full max-w-5xl">
+          {error}
+        </div>
+      )}
+
+      {/* 3-column grid: Spillere | Artikler | Start */}
+      <div className="w-full max-w-5xl grid grid-cols-3 gap-4">
+        {/* Column 1: Spillere */}
+        <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6">
+          <h2 className="text-lg font-[var(--font-fredoka)] font-semibold mb-3 text-cyan">
+            Spillere ({lobby.players.length})
+          </h2>
+          <div className="space-y-2">
+            {lobby.players.map((p, i) => (
+              <div
+                key={p.id}
+                className={`flex items-center gap-2 bg-background/30 rounded-xl px-4 py-2.5 player-color-${i % 6}`}
+              >
+                <span className={`flex-1 font-[var(--font-fredoka)] font-medium ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+                  {p.name}
+                </span>
+                {p.isHost && (
+                  <span className="text-xs bg-pink/20 text-pink px-2.5 py-0.5 rounded-full font-[var(--font-fredoka)]">
+                    Vert
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Column 2: Artikler */}
+        <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6">
+          <h2 className="text-lg font-[var(--font-fredoka)] font-semibold mb-3 text-pink">
+            Velg artikler
+          </h2>
+          <ArticleSearch
+            label="Startartikkel"
+            value={startArticle}
+            onSelect={(v) => {
+              setStartArticle(v);
+              if (v) localArticlesRef.current = true;
+            }}
+          />
+          <ArticleSearch
+            label="Målartikkel"
+            value={endArticle}
+            onSelect={(v) => {
+              setEndArticle(v);
+              if (v) localArticlesRef.current = true;
+            }}
+          />
+        </div>
+
+        {/* Column 3: Start */}
+        <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 flex flex-col items-center justify-center glow-pink">
+          <button
+            onClick={handleStart}
+            disabled={!startArticle || !endArticle || starting}
+            className="w-full btn-go py-8 rounded-2xl text-3xl font-[var(--font-fredoka)] font-bold disabled:opacity-30"
+          >
+            {starting ? "Starter..." : "KJØR!"}
+          </button>
+          {(!startArticle || !endArticle) && (
+            <p className="text-foreground/30 text-sm mt-3 font-[var(--font-fredoka)] text-center">
+              Velg start- og målartikkel først
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
