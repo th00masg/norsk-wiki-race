@@ -215,30 +215,32 @@ export default function LobbyPage({
   // ===== HOST VIEW =====
   return (
     <div className="min-h-screen flex flex-col items-center p-6">
-      {/* Header: title + code + QR */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-[var(--font-fredoka)] font-bold mb-2 title-gradient">
-          Venteområdet
-        </h1>
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="lobby-code font-[var(--font-space-mono)] text-5xl tracking-[0.3em] text-pink font-bold">
-            {code.toUpperCase()}
-          </span>
-          <button
-            onClick={copyCode}
-            className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-[var(--font-fredoka)]"
-          >
-            {copied ? "Kopiert!" : "Kopier"}
-          </button>
+      {/* Header: title + code on left, QR on right */}
+      <div className="w-full max-w-5xl flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-5xl font-[var(--font-fredoka)] font-bold mb-3 title-gradient">
+            Venteområdet
+          </h1>
+          <div className="flex items-center gap-3 mb-1">
+            <span className="lobby-code font-[var(--font-space-mono)] text-7xl tracking-[0.3em] text-pink font-bold">
+              {code.toUpperCase()}
+            </span>
+            <button
+              onClick={copyCode}
+              className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-[var(--font-fredoka)]"
+            >
+              {copied ? "Kopiert!" : "Kopier"}
+            </button>
+          </div>
+          <p className="text-foreground/40 text-lg font-[var(--font-fredoka)]">
+            Del koden med de andre gjestene!
+          </p>
         </div>
-        <p className="text-foreground/40 text-sm font-[var(--font-fredoka)]">
-          Del koden med de andre gjestene!
-        </p>
-        <div className="mt-4">
+        <div className="text-center shrink-0 ml-8">
           <img
             src="/qr.png"
             alt="QR-kode til spillet"
-            className="mx-auto w-44 h-44 rounded-xl border-2 border-card-border"
+            className="w-48 h-48 rounded-xl border-2 border-card-border"
           />
           <p className="text-foreground/30 text-xs mt-1 font-[var(--font-fredoka)]">
             Skann for å bli med!
