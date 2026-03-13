@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAndTransformArticle } from "@/lib/wiki-proxy";
+import { fetchArticleHtml, transformForPlayer } from "@/lib/wiki-proxy";
 
 const cache = new Map<string, { html: string; title: string; time: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -23,7 +23,8 @@ export async function GET(
   }
 
   try {
-    const { html, title } = await fetchAndTransformArticle(decodedSlug);
+    const { html: rawHtml, title } = await fetchArticleHtml(decodedSlug);
+    const html = transformForPlayer(rawHtml);
 
     // Store in cache
     cache.set(decodedSlug, { html, title, time: Date.now() });

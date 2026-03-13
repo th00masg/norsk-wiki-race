@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Fredoka, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
   subsets: ["latin"],
 });
 
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "Norsk Wiki Race",
-  description: "Kappkjor gjennom norske Wikipedia-artikler!",
+  title: "Mathias' Wiki Race",
+  description: "Bursdags-Wiki-Race! Kappkjor gjennom Wikipedia!",
 };
 
 export default function RootLayout({
@@ -19,7 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no">
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+      <body
+        className={`${fredoka.variable} ${spaceMono.variable} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

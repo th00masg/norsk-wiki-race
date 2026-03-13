@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-
 interface PlayerPanelProps {
   name: string;
   currentArticle: string | null;
@@ -17,30 +15,7 @@ export default function PlayerPanel({
   clickCount,
   finished,
   finishTime,
-  gameStartTime,
 }: PlayerPanelProps) {
-  const [html, setHtml] = useState("");
-  const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(true);
-  const lastSlugRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!currentArticle || currentArticle === lastSlugRef.current) return;
-    lastSlugRef.current = currentArticle;
-    setLoading(true);
-
-    fetch(`/api/wiki/${encodeURIComponent(currentArticle)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.html) {
-          setHtml(data.html);
-          setTitle(data.title);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [currentArticle]);
-
   function formatTime(ms: number) {
     const seconds = Math.floor(ms / 1000);
     const m = Math.floor(seconds / 60);
@@ -48,59 +23,59 @@ export default function PlayerPanel({
     return `${m}:${s.toString().padStart(2, "0")}`;
   }
 
+  const frameUrl = currentArticle
+    ? `/api/wiki-frame/${encodeURIComponent(currentArticle)}`
+    : "about:blank";
+
   return (
     <div
-      className={`flex flex-col border rounded-lg overflow-hidden ${
+      className={`flex flex-col rounded-xl overflow-hidden ${
         finished
-          ? "border-success/50 bg-success/5"
-          : "border-card-border bg-card"
-      }`}
+          ? "border-2 border-lime/50 glow-lime"
+          : "border border-card-border"
+      } bg-card/80 backdrop-blur-sm`}
     >
       {/* Player header */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-card-border bg-background/50 shrink-0">
-        <span className="font-semibold truncate flex-1">{name}</span>
-        <span className="font-mono text-accent font-bold">{clickCount}</span>
-        <span className="text-xs text-gray-400">klikk</span>
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-card-border bg-background/30 shrink-0">
+        <span className="font-[var(--font-fredoka)] font-semibold truncate flex-1 text-pink">
+          {name}
+        </span>
+        <span className="font-[var(--font-space-mono)] text-cyan font-bold text-lg">
+          {clickCount}
+        </span>
+        <span className="text-xs text-foreground/30 font-[var(--font-fredoka)]">
+          klikk
+        </span>
         {finished && finishTime && (
-          <span className="text-xs text-success font-medium ml-1">
+          <span className="text-xs text-lime font-[var(--font-space-mono)] font-bold ml-1">
             {formatTime(finishTime)}
           </span>
         )}
-        {finished && (
-          <span className="text-success text-sm">&#10003;</span>
-        )}
+        {finished && <span className="text-lg">🏁</span>}
       </div>
 
-      {/* Article preview */}
-      <div className="flex-1 overflow-y-auto relative">
+      {/* Article iframe */}
+      <div className="flex-1 relative overflow-hidden">
         {finished && (
-          <div className="absolute inset-0 bg-success/10 z-10 flex items-center justify-center">
-            <div className="bg-card/90 rounded-lg px-4 py-3 text-center">
-              <div className="text-success font-bold text-lg">I mal!</div>
-              <div className="text-sm text-gray-400">
+          <div className="absolute inset-0 bg-lime/5 z-10 flex items-center justify-center backdrop-blur-[1px]">
+            <div className="bg-card/95 rounded-xl px-5 py-4 text-center border border-lime/30">
+              <div className="text-3xl mb-1">🎉</div>
+              <div className="text-lime font-[var(--font-fredoka)] font-bold text-xl">
+                I mal!
+              </div>
+              <div className="text-sm text-foreground/50 font-[var(--font-space-mono)]">
                 {clickCount} klikk
-                {finishTime
-                  ? ` \u00b7 ${formatTime(finishTime)}`
-                  : ""}
+                {finishTime ? ` · ${formatTime(finishTime)}` : ""}
               </div>
             </div>
           </div>
         )}
-        {loading ? (
-          <div className="flex items-center justify-center p-8">
-            <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div className="wiki-content wiki-content-mini">
-            <div className="text-xs font-bold text-gray-500 mb-1 border-b pb-1">
-              <span dangerouslySetInnerHTML={{ __html: title }} />
-            </div>
-            <div
-              className="pointer-events-none"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          </div>
-        )}
+        <iframe
+          src={frameUrl}
+          className="w-full h-full border-0 bg-white"
+          sandbox="allow-same-origin"
+          title={`${name} sin artikkel`}
+        />
       </div>
     </div>
   );

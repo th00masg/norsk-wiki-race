@@ -2,16 +2,20 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #0f172a;
-  --foreground: #e2e8f0;
-  --card: #1e293b;
-  --card-border: #334155;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --success: #22c55e;
-  --gold: #eab308;
-  --silver: #94a3b8;
-  --bronze: #d97706;
+  --background: #1a0a2e;
+  --foreground: #f0e6ff;
+  --card: #2d1b4e;
+  --card-border: #5b3a8c;
+  --accent: #ff6bcd;
+  --accent-hover: #ff3db8;
+  --success: #39ff14;
+  --gold: #ffd700;
+  --silver: #c0c0c0;
+  --bronze: #cd7f32;
+  --pink: #ff6bcd;
+  --cyan: #00e5ff;
+  --lime: #39ff14;
+  --orange: #ff9100;
 }
 
 @theme inline {
@@ -25,32 +29,147 @@
   --color-gold: var(--gold);
   --color-silver: var(--silver);
   --color-bronze: var(--bronze);
+  --color-pink: var(--pink);
+  --color-cyan: var(--cyan);
+  --color-lime: var(--lime);
+  --color-orange: var(--orange);
+  --font-heading: var(--font-fredoka);
+  --font-mono: var(--font-space-mono);
 }
 
 body {
   background: var(--background);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(255, 107, 205, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(57, 255, 20, 0.05) 0%, transparent 50%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-fredoka), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
 
-/* Wikipedia article styling */
+/* ===== Fun title gradient ===== */
+.title-gradient {
+  background: linear-gradient(135deg, #ff6bcd, #00e5ff, #39ff14, #ff9100);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ===== Glow effects ===== */
+.glow-pink {
+  box-shadow: 0 0 15px rgba(255, 107, 205, 0.3), 0 0 30px rgba(255, 107, 205, 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.3), 0 0 30px rgba(0, 229, 255, 0.1);
+}
+
+.glow-lime {
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.3), 0 0 30px rgba(57, 255, 20, 0.1);
+}
+
+/* ===== Confetti animation for results ===== */
+@keyframes confetti-fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti-piece {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+  z-index: 50;
+  border-radius: 2px;
+}
+
+/* ===== Pulse for lobby code ===== */
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(255, 107, 205, 0.5); }
+  50% { text-shadow: 0 0 25px rgba(255, 107, 205, 0.8), 0 0 40px rgba(0, 229, 255, 0.4); }
+}
+
+.lobby-code {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===== Party button ===== */
+.btn-party {
+  background: linear-gradient(135deg, #ff6bcd, #ff3db8);
+  transition: all 0.2s ease;
+}
+
+.btn-party:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff3db8, #ff6bcd);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 107, 205, 0.4);
+}
+
+.btn-party:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-go {
+  background: linear-gradient(135deg, #39ff14, #00c853);
+  color: #1a0a2e;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-go:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.4);
+}
+
+.btn-go:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== Player colors (cycle) ===== */
+.player-color-0 { border-left: 3px solid #ff6bcd; }
+.player-color-1 { border-left: 3px solid #00e5ff; }
+.player-color-2 { border-left: 3px solid #39ff14; }
+.player-color-3 { border-left: 3px solid #ff9100; }
+.player-color-4 { border-left: 3px solid #ffd700; }
+.player-color-5 { border-left: 3px solid #e040fb; }
+
+/* ===== Wikipedia article styling ===== */
 .wiki-content {
   background: #ffffff;
   color: #202122;
   padding: 1.5rem;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   line-height: 1.6;
   font-size: 0.9rem;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 2px solid #5b3a8c;
 }
 
 .wiki-content a[data-wiki-slug] {
-  color: #3366cc;
+  color: #7c3aed;
   text-decoration: none;
   cursor: pointer;
+  font-weight: 500;
+  border-bottom: 1px dashed #7c3aed40;
+  transition: all 0.15s;
 }
 
 .wiki-content a[data-wiki-slug]:hover {
-  text-decoration: underline;
+  color: #a855f7;
+  border-bottom-color: #a855f7;
+  background: #f3e8ff;
 }
 
 .wiki-content a:not([data-wiki-slug]) {
@@ -113,16 +232,18 @@ body {
 
 .wiki-content h2 {
   font-size: 1.3rem;
-  border-bottom: 1px solid #a2a9b1;
+  border-bottom: 2px solid #e9d5ff;
   padding-bottom: 0.2rem;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+  color: #5b21b6;
 }
 
 .wiki-content h3 {
   font-size: 1.1rem;
   margin-top: 1rem;
   margin-bottom: 0.3rem;
+  color: #6d28d9;
 }
 
 .wiki-content ul {
@@ -160,6 +281,8 @@ body {
   padding: 0.75rem;
   font-size: 0.7rem;
   line-height: 1.4;
+  border: none;
+  border-radius: 0;
 }
 
 .wiki-content-mini h2 {

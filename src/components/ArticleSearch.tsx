@@ -60,15 +60,17 @@ export default function ArticleSearch({
   if (value) {
     return (
       <div className="mb-3">
-        <label className="block text-sm text-gray-400 mb-1">{label}</label>
-        <div className="flex items-center gap-2 bg-card border border-card-border rounded-lg px-3 py-2">
-          <span className="flex-1">{value.title}</span>
+        <label className="block text-sm text-foreground/40 mb-1 font-[var(--font-fredoka)]">
+          {label}
+        </label>
+        <div className="flex items-center gap-2 bg-background/30 border border-card-border rounded-xl px-4 py-2.5">
+          <span className="flex-1 font-[var(--font-fredoka)]">{value.title}</span>
           <button
             onClick={() => {
               onSelect(null as unknown as { title: string; slug: string });
               setQuery("");
             }}
-            className="text-gray-400 hover:text-white text-sm"
+            className="text-foreground/40 hover:text-pink text-sm font-[var(--font-fredoka)] transition-colors"
           >
             Endre
           </button>
@@ -79,17 +81,19 @@ export default function ArticleSearch({
 
   return (
     <div className="mb-3 relative" ref={containerRef}>
-      <label className="block text-sm text-gray-400 mb-1">{label}</label>
+      <label className="block text-sm text-foreground/40 mb-1 font-[var(--font-fredoka)]">
+        {label}
+      </label>
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => results.length > 0 && setOpen(true)}
-        placeholder="Søk etter artikkel..."
-        className="w-full bg-card border border-card-border rounded-lg px-3 py-2 text-foreground placeholder-gray-500 focus:outline-none focus:border-accent"
+        placeholder="Sok etter artikkel..."
+        className="w-full bg-background/50 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/30 focus:outline-none focus:border-pink transition-colors font-[var(--font-fredoka)]"
       />
       {open && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-card border border-card-border rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-card border border-card-border rounded-xl shadow-2xl max-h-60 overflow-y-auto">
           {results.map((r) => (
             <button
               key={r.slug}
@@ -98,11 +102,11 @@ export default function ArticleSearch({
                 setOpen(false);
                 setQuery("");
               }}
-              className="w-full text-left px-3 py-2 hover:bg-accent/20 border-b border-card-border last:border-b-0"
+              className="w-full text-left px-4 py-2.5 hover:bg-pink/10 border-b border-card-border last:border-b-0 transition-colors"
             >
-              <div className="font-medium">{r.title}</div>
+              <div className="font-[var(--font-fredoka)] font-medium">{r.title}</div>
               {r.description && (
-                <div className="text-xs text-gray-400 truncate">
+                <div className="text-xs text-foreground/30 truncate">
                   {r.description}
                 </div>
               )}

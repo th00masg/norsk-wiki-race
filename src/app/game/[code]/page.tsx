@@ -25,6 +25,38 @@ interface GameState {
   gameStartTime: number | null;
 }
 
+const CONFETTI_COLORS = ["#ff6bcd", "#00e5ff", "#39ff14", "#ff9100", "#ffd700", "#e040fb"];
+
+function ConfettiEffect() {
+  const pieces = Array.from({ length: 50 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    delay: Math.random() * 3,
+    duration: 2 + Math.random() * 3,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    size: 6 + Math.random() * 10,
+  }));
+
+  return (
+    <>
+      {pieces.map((p) => (
+        <div
+          key={p.id}
+          className="confetti-piece"
+          style={{
+            left: `${p.left}%`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            backgroundColor: p.color,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 export default function GamePage({
   params,
 }: {
@@ -43,14 +75,12 @@ export default function GamePage({
   const articleContainerRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef(code);
 
-  // Load playerId from sessionStorage on mount
   useEffect(() => {
     setPlayerId(sessionStorage.getItem("playerId"));
   }, []);
 
   const isHost = gameState?.players.find((p) => p.id === playerId)?.isHost ?? false;
 
-  // Non-host players (the actual game participants)
   const gamePlayers = gameState
     ? gameState.players.filter((p) => !p.isHost)
     : [];
@@ -71,7 +101,6 @@ export default function GamePage({
     }
   }, []);
 
-  // Initial load
   useEffect(() => {
     if (playerId === null) return;
 
@@ -85,7 +114,6 @@ export default function GamePage({
         return;
       }
 
-      // Only fetch article if we're a player (not the host)
       const me = data.players.find((p) => p.id === playerId);
       if (me && !me.isHost) {
         setClickCount(me.clickCount);
@@ -98,7 +126,6 @@ export default function GamePage({
     init();
   }, [playerId, fetchArticle, router]);
 
-  // Poll game state - use ref to avoid re-creating interval
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -112,7 +139,6 @@ export default function GamePage({
     return () => clearInterval(interval);
   }, []);
 
-  // Timer
   useEffect(() => {
     if (!gameState?.gameStartTime || finished || gameState.state === "finished")
       return;
@@ -122,13 +148,11 @@ export default function GamePage({
     return () => clearInterval(interval);
   }, [gameState?.gameStartTime, finished, gameState?.state]);
 
-  // Stable navigate callback - prevents WikiArticle re-renders
   const handleNavigate = useCallback(
     async (slug: string) => {
       const pid = sessionStorage.getItem("playerId");
       if (!pid) return;
 
-      // Optimistic update
       setClickCount((c) => c + 1);
       fetchArticle(slug);
 
@@ -182,91 +206,89 @@ export default function GamePage({
     return a.clickCount - b.clickCount;
   });
 
-  // Loading state
   if (playerId === null || !gameState) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-pink border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // Results view (shown to everyone)
+  // ========== RESULTS ==========
   if (gameState.state === "finished") {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-xl">
-          <h1 className="text-3xl font-bold text-center mb-2">Resultater</h1>
-          <p className="text-center text-gray-400 mb-6">
-            {gameState.startArticleTitle}{" "}
-            <span className="text-gray-500">&rarr;</span>{" "}
-            {gameState.endArticleTitle}
-          </p>
+    const RANK_STYLES = [
+      "text-gold text-3xl",
+      "text-silver text-2xl",
+      "text-bronze text-xl",
+    ];
+    const RANK_LABELS = ["1.", "2.", "3."];
 
-          <div className="bg-card border border-card-border rounded-xl overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-card-border text-sm text-gray-400">
-                  <th className="px-4 py-3 text-left">#</th>
-                  <th className="px-4 py-3 text-left">Spiller</th>
-                  <th className="px-4 py-3 text-center">Klikk</th>
-                  <th className="px-4 py-3 text-center">Tid</th>
-                  <th className="px-4 py-3 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedPlayers.map((p, i) => (
-                  <tr
-                    key={p.id}
-                    className={`border-b border-card-border last:border-b-0 ${
-                      p.id === playerId ? "bg-accent/10" : ""
-                    }`}
-                  >
-                    <td className="px-4 py-3">
-                      <span
-                        className={`font-bold text-lg ${
-                          i === 0 && p.finished
-                            ? "text-gold"
-                            : i === 1 && p.finished
-                              ? "text-silver"
-                              : i === 2 && p.finished
-                                ? "text-bronze"
-                                : "text-gray-500"
-                        }`}
-                      >
-                        {i + 1}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-medium">{p.name}</td>
-                    <td className="px-4 py-3 text-center font-mono">
-                      {p.finished ? p.clickCount : "-"}
-                    </td>
-                    <td className="px-4 py-3 text-center font-mono text-sm">
-                      {p.finishTime
-                        ? formatTime(Math.floor(p.finishTime / 1000))
-                        : "-"}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {p.finished ? (
-                        <span className="text-success text-sm">Fullfort</span>
-                      ) : (
-                        <span className="text-gray-500 text-sm">
-                          Ikke fullfort
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <ConfettiEffect />
+        <div className="w-full max-w-xl relative z-10">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-[var(--font-fredoka)] font-bold title-gradient mb-2">
+              Resultater!
+            </h1>
+            <p className="text-foreground/50 font-[var(--font-fredoka)]">
+              <span className="text-cyan">{gameState.startArticleTitle}</span>
+              <span className="text-foreground/30 mx-2">&rarr;</span>
+              <span className="text-lime">{gameState.endArticleTitle}</span>
+            </p>
           </div>
 
-          <div className="flex gap-3 mt-6 justify-center">
+          <div className="space-y-3">
+            {sortedPlayers.map((p, i) => (
+              <div
+                key={p.id}
+                className={`bg-card/80 backdrop-blur-sm border rounded-2xl p-4 flex items-center gap-4 transition-all ${
+                  i === 0 && p.finished
+                    ? "border-gold/50 glow-pink"
+                    : "border-card-border"
+                }`}
+              >
+                <div className={`font-[var(--font-fredoka)] font-bold w-10 text-center ${
+                  i < 3 && p.finished ? RANK_STYLES[i] : "text-foreground/30 text-lg"
+                }`}>
+                  {i < 3 && p.finished ? RANK_LABELS[i] : `${i + 1}.`}
+                </div>
+                <div className="flex-1">
+                  <div className="font-[var(--font-fredoka)] font-semibold text-lg">
+                    {p.name}
+                  </div>
+                  <div className="text-sm text-foreground/40">
+                    {p.finished ? (
+                      <>
+                        <span className="text-pink font-[var(--font-space-mono)]">
+                          {p.clickCount} klikk
+                        </span>
+                        {p.finishTime && (
+                          <span className="text-cyan font-[var(--font-space-mono)] ml-2">
+                            {formatTime(Math.floor(p.finishTime / 1000))}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-foreground/20">Ga seg</span>
+                    )}
+                  </div>
+                </div>
+                {p.finished && (
+                  <div className={`text-2xl ${i === 0 ? "animate-bounce" : ""}`}>
+                    {i === 0 ? "🏆" : i === 1 ? "🥈" : i === 2 ? "🥉" : "✅"}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3 mt-8 justify-center">
             <button
               onClick={() => router.push("/")}
-              className="bg-card border border-card-border hover:bg-accent/20 text-foreground font-medium py-2 px-6 rounded-lg transition-colors"
+              className="btn-party text-white font-[var(--font-fredoka)] font-semibold py-3 px-8 rounded-xl text-lg"
             >
-              Hjem
+              Spill igjen!
             </button>
           </div>
         </div>
@@ -286,39 +308,37 @@ export default function GamePage({
 
     return (
       <div className="h-screen flex flex-col">
-        {/* Header */}
-        <div className="bg-card border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
+        <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
           <div className="flex-1 min-w-0">
-            <div className="text-sm text-gray-400">Rute</div>
-            <div className="font-medium">
-              <span className="text-accent">
+            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Rute</div>
+            <div className="font-[var(--font-fredoka)] font-medium">
+              <span className="text-cyan">
                 {gameState.startArticleTitle}
               </span>
-              <span className="text-gray-500 mx-2">&rarr;</span>
-              <span className="text-success">
+              <span className="text-foreground/30 mx-2">&rarr;</span>
+              <span className="text-lime">
                 {gameState.endArticleTitle}
               </span>
             </div>
           </div>
           <div className="text-center px-4">
-            <div className="text-lg font-mono">{formatTime(elapsed)}</div>
-            <div className="text-xs text-gray-400">tid</div>
+            <div className="text-xl font-[var(--font-space-mono)] text-pink font-bold">{formatTime(elapsed)}</div>
+            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">tid</div>
           </div>
           <div className="text-center px-4">
-            <div className="text-lg font-mono">
+            <div className="text-xl font-[var(--font-space-mono)] text-lime font-bold">
               {gamePlayers.filter((p) => p.finished).length}/{playerCount}
             </div>
-            <div className="text-xs text-gray-400">i mal</div>
+            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">i mal</div>
           </div>
           <button
             onClick={handleEndGame}
-            className="bg-red-500/20 border border-red-500/50 text-red-300 rounded-lg px-4 py-2 text-sm hover:bg-red-500/30 transition-colors"
+            className="bg-red-500/20 border border-red-500/50 text-red-300 rounded-xl px-4 py-2 text-sm hover:bg-red-500/30 transition-colors font-[var(--font-fredoka)]"
           >
-            Avslutt spill
+            Avslutt
           </button>
         </div>
 
-        {/* Player grid */}
         <div
           className="flex-1 overflow-hidden p-3 grid gap-3"
           style={{
@@ -345,49 +365,46 @@ export default function GamePage({
   // ========== PLAYER VIEW ==========
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
-      <div className="bg-card border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
+      <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
         <div className="flex-1 min-w-0">
-          <div className="text-sm text-gray-400">Navaerende artikkel</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Du leser</div>
           <div
-            className="font-medium truncate"
+            className="font-[var(--font-fredoka)] font-medium truncate"
             dangerouslySetInnerHTML={{ __html: articleTitle }}
           />
         </div>
         <div className="text-center px-4">
-          <div className="text-3xl font-bold font-mono text-accent">
+          <div className="text-3xl font-[var(--font-space-mono)] font-bold text-pink">
             {clickCount}
           </div>
-          <div className="text-xs text-gray-400">klikk</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">klikk</div>
         </div>
         <div className="text-center px-4">
-          <div className="text-lg font-mono">{formatTime(elapsed)}</div>
-          <div className="text-xs text-gray-400">tid</div>
+          <div className="text-lg font-[var(--font-space-mono)] text-cyan">{formatTime(elapsed)}</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">tid</div>
         </div>
         <div className="text-right flex-1 min-w-0">
-          <div className="text-sm text-gray-400">Mal</div>
-          <div className="font-medium text-success truncate">
+          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Mal</div>
+          <div className="font-[var(--font-fredoka)] font-semibold text-lime truncate">
             {gameState.endArticleTitle}
           </div>
         </div>
       </div>
 
-      {/* Finish overlay */}
       {finished && (
-        <div className="bg-success/20 border-b border-success/50 px-4 py-3 text-center">
-          <span className="text-success font-bold text-lg">
+        <div className="bg-lime/10 border-b border-lime/30 px-4 py-3 text-center">
+          <span className="text-lime font-[var(--font-fredoka)] font-bold text-xl">
             Du fant malet!
           </span>
-          <span className="text-gray-300 ml-3">
+          <span className="text-foreground/60 ml-3 font-[var(--font-space-mono)]">
             {clickCount} klikk &middot; {formatTime(elapsed)}
           </span>
-          <span className="text-gray-400 ml-3 text-sm">
-            Venter pa andre spillere...
+          <span className="text-foreground/30 ml-3 text-sm font-[var(--font-fredoka)]">
+            Venter pa de andre...
           </span>
         </div>
       )}
 
-      {/* Article content */}
       <div
         ref={articleContainerRef}
         className="flex-1 overflow-y-auto p-4"
