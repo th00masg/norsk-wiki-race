@@ -166,6 +166,18 @@ export default function LobbyPage({
           <p className="text-foreground/40 text-sm mt-2 font-[var(--font-fredoka)]">
             Del koden med de andre gjestene!
           </p>
+          {isHost && (
+            <div className="mt-4">
+              <img
+                src="/qr.png"
+                alt="QR-kode til spillet"
+                className="mx-auto w-40 h-40 rounded-xl border-2 border-card-border"
+              />
+              <p className="text-foreground/30 text-xs mt-1 font-[var(--font-fredoka)]">
+                Skann for a bli med!
+              </p>
+            </div>
+          )}
         </div>
 
         {error && (
