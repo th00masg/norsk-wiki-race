@@ -22,8 +22,26 @@ export default function ArticleSearch({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [open, setOpen] = useState(false);
+  const [loadingRandom, setLoadingRandom] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  async function handleRandom() {
+    setLoadingRandom(true);
+    try {
+      const res = await fetch("/api/random");
+      const data = await res.json();
+      if (res.ok) {
+        onSelect({ title: data.title, slug: data.slug });
+        setQuery("");
+        setOpen(false);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingRandom(false);
+    }
+  }
 
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -84,14 +102,24 @@ export default function ArticleSearch({
       <label className="block text-sm text-foreground/40 mb-1 font-[var(--font-fredoka)]">
         {label}
       </label>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => results.length > 0 && setOpen(true)}
-        placeholder="Sok etter artikkel..."
-        className="w-full bg-background/50 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/30 focus:outline-none focus:border-pink transition-colors font-[var(--font-fredoka)]"
-      />
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => results.length > 0 && setOpen(true)}
+          placeholder="Søk etter artikkel..."
+          className="flex-1 bg-background/50 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/30 focus:outline-none focus:border-pink transition-colors font-[var(--font-fredoka)]"
+        />
+        <button
+          onClick={handleRandom}
+          disabled={loadingRandom}
+          className="bg-background/50 border border-card-border rounded-xl px-3 py-2.5 text-foreground/60 hover:border-cyan hover:text-cyan transition-colors font-[var(--font-fredoka)] text-sm shrink-0 disabled:opacity-40"
+          title="Tilfeldig artikkel"
+        >
+          {loadingRandom ? "..." : "🎲"}
+        </button>
+      </div>
       {open && results.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-card border border-card-border rounded-xl shadow-2xl max-h-60 overflow-y-auto">
           {results.map((r) => (
