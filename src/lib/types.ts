@@ -6,6 +6,7 @@ export interface Player {
   clickCount: number;
   finished: boolean;
   finishTime: number | null;
+  path?: string[];
 }
 
 export interface EmojiReaction {

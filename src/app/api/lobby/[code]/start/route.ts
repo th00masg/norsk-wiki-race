@@ -37,6 +37,7 @@ export async function POST(
     player.clickCount = 0;
     player.finished = false;
     player.finishTime = null;
+    player.path = [lobby.startArticle];
   }
 
   await setLobby(lobby);

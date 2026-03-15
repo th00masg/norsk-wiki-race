@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, use } from "react";
+import { useState, useEffect, useCallback, useRef, use, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import WikiArticle from "@/components/WikiArticle";
 import PlayerPanel from "@/components/PlayerPanel";
@@ -13,6 +13,7 @@ interface PlayerState {
   clickCount: number;
   finished: boolean;
   finishTime: number | null;
+  path: string[];
 }
 
 interface GameState {
@@ -55,6 +56,99 @@ function ConfettiEffect() {
         />
       ))}
     </>
+  );
+}
+
+function ResultCard({
+  player: p,
+  rank: i,
+  rankStyle,
+  rankLabel,
+  formatTime,
+  formatSlug,
+}: {
+  player: PlayerState;
+  rank: number;
+  rankStyle: string;
+  rankLabel: string;
+  formatTime: (s: number) => string;
+  formatSlug: (slug: string) => string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const path = p.path || [];
+
+  return (
+    <div
+      className={`bg-card/80 backdrop-blur-sm border rounded-2xl overflow-hidden transition-all ${
+        i === 0 && p.finished
+          ? "border-gold/50 glow-pink"
+          : "border-card-border"
+      }`}
+    >
+      <div className="p-4 flex items-center gap-4">
+        <div className={`font-[var(--font-fredoka)] font-bold w-10 text-center ${rankStyle}`}>
+          {rankLabel}
+        </div>
+        <div className="flex-1">
+          <div className="font-[var(--font-fredoka)] font-semibold text-lg">
+            {p.name}
+          </div>
+          <div className="text-sm text-foreground/40">
+            {p.finished ? (
+              <>
+                <span className="text-pink font-[var(--font-space-mono)]">
+                  {p.clickCount} klikk
+                </span>
+                {p.finishTime && (
+                  <span className="text-cyan font-[var(--font-space-mono)] ml-2">
+                    {formatTime(Math.floor(p.finishTime / 1000))}
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="text-foreground/20">Ga seg</span>
+            )}
+          </div>
+        </div>
+        {p.finished && (
+          <div className={`text-2xl ${i === 0 ? "animate-bounce" : ""}`}>
+            {i === 0 ? "🏆" : i === 1 ? "🥈" : i === 2 ? "🥉" : "✅"}
+          </div>
+        )}
+        {path.length > 0 && (
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="text-foreground/40 hover:text-foreground text-sm font-[var(--font-fredoka)] transition-colors px-2"
+          >
+            {expanded ? "Skjul sti" : "Vis sti"}
+          </button>
+        )}
+      </div>
+      {expanded && path.length > 0 && (
+        <div className="px-4 pb-4 pt-0">
+          <div className="bg-background/30 rounded-xl px-4 py-3 flex flex-wrap items-center gap-1 text-sm">
+            {path.map((slug, j) => (
+              <Fragment key={j}>
+                {j > 0 && (
+                  <span className="text-foreground/20 mx-1">&rarr;</span>
+                )}
+                <span
+                  className={`font-[var(--font-fredoka)] ${
+                    j === 0
+                      ? "text-cyan font-semibold"
+                      : j === path.length - 1 && p.finished
+                        ? "text-lime font-semibold"
+                        : "text-foreground/70"
+                  }`}
+                >
+                  {formatSlug(slug)}
+                </span>
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -227,10 +321,14 @@ export default function GamePage({
     ];
     const RANK_LABELS = ["1.", "2.", "3."];
 
+    function formatSlug(slug: string) {
+      return decodeURIComponent(slug).replace(/_/g, " ");
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
         <ConfettiEffect />
-        <div className="w-full max-w-xl relative z-10">
+        <div className="w-full max-w-2xl relative z-10">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-[var(--font-fredoka)] font-bold title-gradient mb-2">
               Resultater!
@@ -244,46 +342,15 @@ export default function GamePage({
 
           <div className="space-y-3">
             {sortedPlayers.map((p, i) => (
-              <div
+              <ResultCard
                 key={p.id}
-                className={`bg-card/80 backdrop-blur-sm border rounded-2xl p-4 flex items-center gap-4 transition-all ${
-                  i === 0 && p.finished
-                    ? "border-gold/50 glow-pink"
-                    : "border-card-border"
-                }`}
-              >
-                <div className={`font-[var(--font-fredoka)] font-bold w-10 text-center ${
-                  i < 3 && p.finished ? RANK_STYLES[i] : "text-foreground/30 text-lg"
-                }`}>
-                  {i < 3 && p.finished ? RANK_LABELS[i] : `${i + 1}.`}
-                </div>
-                <div className="flex-1">
-                  <div className="font-[var(--font-fredoka)] font-semibold text-lg">
-                    {p.name}
-                  </div>
-                  <div className="text-sm text-foreground/40">
-                    {p.finished ? (
-                      <>
-                        <span className="text-pink font-[var(--font-space-mono)]">
-                          {p.clickCount} klikk
-                        </span>
-                        {p.finishTime && (
-                          <span className="text-cyan font-[var(--font-space-mono)] ml-2">
-                            {formatTime(Math.floor(p.finishTime / 1000))}
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      <span className="text-foreground/20">Ga seg</span>
-                    )}
-                  </div>
-                </div>
-                {p.finished && (
-                  <div className={`text-2xl ${i === 0 ? "animate-bounce" : ""}`}>
-                    {i === 0 ? "🏆" : i === 1 ? "🥈" : i === 2 ? "🥉" : "✅"}
-                  </div>
-                )}
-              </div>
+                player={p}
+                rank={i}
+                rankStyle={i < 3 && p.finished ? RANK_STYLES[i] : "text-foreground/30 text-lg"}
+                rankLabel={i < 3 && p.finished ? RANK_LABELS[i] : `${i + 1}.`}
+                formatTime={formatTime}
+                formatSlug={formatSlug}
+              />
             ))}
           </div>
 

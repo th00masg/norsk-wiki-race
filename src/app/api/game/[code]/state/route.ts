@@ -22,6 +22,7 @@ export async function GET(
       clickCount: p.clickCount,
       finished: p.finished,
       finishTime: p.finishTime,
+      path: p.path || [],
     })),
     startArticle: lobby.startArticle,
     startArticleTitle: lobby.startArticleTitle,

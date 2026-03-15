@@ -37,6 +37,8 @@ export async function POST(
 
   player.clickCount += 1;
   player.currentArticle = article;
+  if (!player.path) player.path = [];
+  player.path.push(article);
 
   // Check if player reached the end article
   const normalizedArticle = decodeURIComponent(article).replace(/_/g, " ").toLowerCase();
