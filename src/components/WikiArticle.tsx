@@ -57,10 +57,10 @@ export default function WikiArticle({
     <div className="relative">
       {/* Loading overlay — shown on top of content, doesn't unmount the content div */}
       {loading && (
-        <div className="absolute inset-0 z-10 bg-white rounded-xl border-2 border-card-border flex items-center justify-center min-h-[300px]">
+        <div className="absolute inset-0 z-10 bg-[#FAFBFC] rounded-xl border border-[#e2e8f0] flex items-center justify-center min-h-[300px]">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-pink border-t-transparent rounded-full animate-spin" />
-            <span className="text-gray-400 text-sm font-[var(--font-fredoka)]">
+            <div className="w-10 h-10 border-3 border-[#e2e8f0] border-t-[#2563EB] rounded-full animate-spin" />
+            <span className="text-[#94A3B8] text-sm font-medium">
               Laster artikkel...
             </span>
           </div>

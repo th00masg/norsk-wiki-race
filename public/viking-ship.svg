@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none">
+  <!-- Hull -->
+  <path d="M20 100 Q30 130 100 130 Q170 130 180 100 L170 100 Q160 120 100 120 Q40 120 30 100Z" fill="#2A3F6B" stroke="#4DA6FF" stroke-width="1.5"/>
+  <!-- Hull detail -->
+  <path d="M35 105 Q100 125 165 105" stroke="#4DA6FF" stroke-width="0.8" opacity="0.4"/>
+  <!-- Dragon head -->
+  <path d="M175 100 Q185 85 190 75 Q192 70 188 68 Q184 72 180 80 Q178 85 170 95" fill="#FFB800" stroke="#FF5757" stroke-width="1.2"/>
+  <circle cx="187" cy="72" r="1.5" fill="#FF5757"/>
+  <!-- Dragon tail -->
+  <path d="M25 100 Q15 85 12 75 Q10 68 15 70 Q18 75 22 85" fill="#FFB800" stroke="#FF5757" stroke-width="1.2"/>
+  <!-- Mast -->
+  <line x1="100" y1="30" x2="100" y2="115" stroke="#94A3B8" stroke-width="2.5"/>
+  <!-- Sail -->
+  <path d="M100 35 Q130 55 100 90 Q80 65 100 35Z" fill="#FF5757" opacity="0.85" stroke="#FF5757" stroke-width="1"/>
+  <path d="M100 35 Q70 55 100 90" stroke="#FF5757" stroke-width="0.8" opacity="0.4"/>
+  <!-- Sail stripe -->
+  <path d="M88 55 Q100 50 112 55" stroke="#FFB800" stroke-width="1.5" opacity="0.7"/>
+  <path d="M84 70 Q100 65 116 70" stroke="#FFB800" stroke-width="1.5" opacity="0.7"/>
+  <!-- Shield row -->
+  <circle cx="55" cy="108" r="5" fill="#FF5757" stroke="#FFB800" stroke-width="1"/>
+  <circle cx="75" cy="112" r="5" fill="#4DA6FF" stroke="#FFB800" stroke-width="1"/>
+  <circle cx="95" cy="114" r="5" fill="#FF5757" stroke="#FFB800" stroke-width="1"/>
+  <circle cx="115" cy="112" r="5" fill="#4DA6FF" stroke="#FFB800" stroke-width="1"/>
+  <circle cx="135" cy="108" r="5" fill="#FF5757" stroke="#FFB800" stroke-width="1"/>
+  <!-- Oars -->
+  <line x1="50" y1="115" x2="40" y2="135" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="70" y1="118" x2="60" y2="140" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="130" y1="118" x2="140" y2="140" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="150" y1="115" x2="160" y2="135" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <!-- Water waves -->
+  <path d="M5 140 Q25 132 45 140 Q65 148 85 140 Q105 132 125 140 Q145 148 165 140 Q185 132 195 140" stroke="#4DA6FF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  <path d="M0 150 Q20 142 40 150 Q60 158 80 150 Q100 142 120 150 Q140 158 160 150 Q180 142 200 150" stroke="#4DA6FF" stroke-width="1" fill="none" opacity="0.2"/>
+</svg>

@@ -78,17 +78,17 @@ export default function ArticleSearch({
   if (value) {
     return (
       <div className="mb-3">
-        <label className="block text-sm text-foreground/40 mb-1 font-[var(--font-fredoka)]">
+        <label className="block text-xs text-foreground/35 mb-1 font-semibold uppercase tracking-wider">
           {label}
         </label>
-        <div className="flex items-center gap-2 bg-background/30 border border-card-border rounded-xl px-4 py-2.5">
-          <span className="flex-1 font-[var(--font-fredoka)]">{value.title}</span>
+        <div className="flex items-center gap-2 bg-surface/40 border border-card-border rounded-xl px-4 py-2.5">
+          <span className="flex-1 font-semibold">{value.title}</span>
           <button
             onClick={() => {
               onSelect(null as unknown as { title: string; slug: string });
               setQuery("");
             }}
-            className="text-foreground/40 hover:text-pink text-sm font-[var(--font-fredoka)] transition-colors"
+            className="text-foreground/40 hover:text-pink text-sm font-semibold transition-colors"
           >
             Endre
           </button>
@@ -99,7 +99,7 @@ export default function ArticleSearch({
 
   return (
     <div className="mb-3 relative" ref={containerRef}>
-      <label className="block text-sm text-foreground/40 mb-1 font-[var(--font-fredoka)]">
+      <label className="block text-xs text-foreground/35 mb-1 font-semibold uppercase tracking-wider">
         {label}
       </label>
       <div className="flex gap-2">
@@ -109,12 +109,12 @@ export default function ArticleSearch({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
           placeholder="Søk etter artikkel..."
-          className="flex-1 bg-background/50 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/30 focus:outline-none focus:border-pink transition-colors font-[var(--font-fredoka)]"
+          className="flex-1 bg-surface/60 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/25 focus:outline-none focus:border-ring focus:shadow-[0_0_0_3px_rgba(42,63,107,0.3)] transition-all"
         />
         <button
           onClick={handleRandom}
           disabled={loadingRandom}
-          className="bg-background/50 border border-card-border rounded-xl px-3 py-2.5 text-foreground/60 hover:border-cyan hover:text-cyan transition-colors font-[var(--font-fredoka)] text-sm shrink-0 disabled:opacity-40"
+          className="bg-surface/60 border border-card-border rounded-xl px-3 py-2.5 text-foreground/50 hover:border-orange hover:text-orange transition-colors text-sm shrink-0 disabled:opacity-30"
           title="Tilfeldig artikkel"
         >
           {loadingRandom ? "..." : "🎲"}
@@ -130,9 +130,9 @@ export default function ArticleSearch({
                 setOpen(false);
                 setQuery("");
               }}
-              className="w-full text-left px-4 py-2.5 hover:bg-pink/10 border-b border-card-border last:border-b-0 transition-colors"
+              className="w-full text-left px-4 py-2.5 hover:bg-cyan/10 border-b border-card-border last:border-b-0 transition-colors"
             >
-              <div className="font-[var(--font-fredoka)] font-medium">{r.title}</div>
+              <div className="font-semibold">{r.title}</div>
               {r.description && (
                 <div className="text-xs text-foreground/30 truncate">
                   {r.description}

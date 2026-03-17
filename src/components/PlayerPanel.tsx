@@ -33,17 +33,17 @@ export default function PlayerPanel({
         finished
           ? "border-2 border-lime/50 glow-lime"
           : "border border-card-border"
-      } bg-card/80 backdrop-blur-sm`}
+      } bg-card/90 backdrop-blur-sm`}
     >
       {/* Player header */}
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-card-border bg-background/30 shrink-0">
-        <span className="font-[var(--font-fredoka)] font-semibold truncate flex-1 text-pink">
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-card-border bg-surface/40 shrink-0">
+        <span className="font-[var(--font-bangers)] text-lg tracking-wide truncate flex-1 text-pink">
           {name}
         </span>
         <span className="font-[var(--font-space-mono)] text-cyan font-bold text-lg">
           {clickCount}
         </span>
-        <span className="text-xs text-foreground/30 font-[var(--font-fredoka)]">
+        <span className="text-xs text-foreground/30 font-semibold uppercase tracking-wider">
           klikk
         </span>
         {finished && finishTime && (
@@ -59,8 +59,8 @@ export default function PlayerPanel({
         {finished && (
           <div className="absolute inset-0 bg-lime/5 z-10 flex items-center justify-center backdrop-blur-[1px]">
             <div className="bg-card/95 rounded-xl px-5 py-4 text-center border border-lime/30">
-              <div className="text-3xl mb-1">🎉</div>
-              <div className="text-lime font-[var(--font-fredoka)] font-bold text-xl">
+              <div className="text-3xl mb-1">🏁</div>
+              <div className="text-lime font-[var(--font-bangers)] text-2xl tracking-wide">
                 I mal!
               </div>
               <div className="text-sm text-foreground/50 font-[var(--font-space-mono)]">

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Outer ring -->
+  <circle cx="60" cy="60" r="55" stroke="#2A3F6B" stroke-width="2"/>
+  <circle cx="60" cy="60" r="50" stroke="#4DA6FF" stroke-width="1" opacity="0.3"/>
+  <!-- Tick marks -->
+  <line x1="60" y1="8" x2="60" y2="18" stroke="#FFB800" stroke-width="2"/>
+  <line x1="60" y1="102" x2="60" y2="112" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="8" y1="60" x2="18" y2="60" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="102" y1="60" x2="112" y2="60" stroke="#94A3B8" stroke-width="1.5"/>
+  <!-- Diagonal ticks -->
+  <line x1="21" y1="21" x2="28" y2="28" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="92" y1="21" x2="99" y2="28" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="21" y1="99" x2="28" y2="92" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <line x1="92" y1="99" x2="99" y2="92" stroke="#94A3B8" stroke-width="1" opacity="0.5"/>
+  <!-- North pointer -->
+  <polygon points="60,15 55,55 60,50 65,55" fill="#FF5757"/>
+  <!-- South pointer -->
+  <polygon points="60,105 55,65 60,70 65,65" fill="#4DA6FF" opacity="0.6"/>
+  <!-- East pointer -->
+  <polygon points="105,60 65,55 70,60 65,65" fill="#94A3B8" opacity="0.4"/>
+  <!-- West pointer -->
+  <polygon points="15,60 55,55 50,60 55,65" fill="#94A3B8" opacity="0.4"/>
+  <!-- Center dot -->
+  <circle cx="60" cy="60" r="4" fill="#FFB800"/>
+  <circle cx="60" cy="60" r="2" fill="#0B1120"/>
+  <!-- Labels -->
+  <text x="60" y="13" text-anchor="middle" fill="#FFB800" font-size="8" font-weight="bold" font-family="sans-serif">N</text>
+</svg>

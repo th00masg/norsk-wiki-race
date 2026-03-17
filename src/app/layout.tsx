@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Fredoka, Space_Mono } from "next/font/google";
+import { Bangers, Quicksand, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
+const bangers = Bangers({
+  variable: "--font-bangers",
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+});
+
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="no">
       <body
-        className={`${fredoka.variable} ${spaceMono.variable} antialiased`}
+        className={`${bangers.variable} ${quicksand.variable} ${spaceMono.variable} antialiased`}
       >
         {children}
       </body>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, use, Fragment } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import WikiArticle from "@/components/WikiArticle";
 import PlayerPanel from "@/components/PlayerPanel";
 
@@ -27,7 +28,7 @@ interface GameState {
   hostPlaying: boolean;
 }
 
-const CONFETTI_COLORS = ["#ff6bcd", "#00e5ff", "#39ff14", "#ff9100", "#ffd700", "#e040fb"];
+const CONFETTI_COLORS = ["#FF5757", "#4DA6FF", "#34D399", "#FFB800", "#A78BFA", "#F472B6"];
 
 function ConfettiEffect() {
   const pieces = Array.from({ length: 50 }, (_, i) => ({
@@ -79,18 +80,18 @@ function ResultCard({
 
   return (
     <div
-      className={`bg-card/80 backdrop-blur-sm border rounded-2xl overflow-hidden transition-all ${
+      className={`bg-card/90 backdrop-blur-sm border rounded-2xl overflow-hidden transition-all ${
         i === 0 && p.finished
-          ? "border-gold/50 glow-pink"
+          ? "border-gold/50 glow-gold"
           : "border-card-border"
       }`}
     >
       <div className="p-4 flex items-center gap-4">
-        <div className={`font-[var(--font-fredoka)] font-bold w-10 text-center ${rankStyle}`}>
+        <div className={`font-[var(--font-quicksand)] font-bold w-10 text-center ${rankStyle}`}>
           {rankLabel}
         </div>
         <div className="flex-1">
-          <div className="font-[var(--font-fredoka)] font-semibold text-lg">
+          <div className="font-[var(--font-quicksand)] font-semibold text-lg">
             {p.name}
           </div>
           <div className="text-sm text-foreground/40">
@@ -118,7 +119,7 @@ function ResultCard({
         {path.length > 0 && (
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="text-foreground/40 hover:text-foreground text-sm font-[var(--font-fredoka)] transition-colors px-2"
+            className="text-foreground/40 hover:text-foreground text-sm font-[var(--font-quicksand)] transition-colors px-2"
           >
             {expanded ? "Skjul sti" : "Vis sti"}
           </button>
@@ -126,14 +127,14 @@ function ResultCard({
       </div>
       {expanded && path.length > 0 && (
         <div className="px-4 pb-4 pt-0">
-          <div className="bg-background/30 rounded-xl px-4 py-3 flex flex-wrap items-center gap-1 text-sm">
+          <div className="bg-surface/50 rounded-xl px-4 py-3 flex flex-wrap items-center gap-1 text-sm">
             {path.map((slug, j) => (
               <Fragment key={j}>
                 {j > 0 && (
                   <span className="text-foreground/20 mx-1">&rarr;</span>
                 )}
                 <span
-                  className={`font-[var(--font-fredoka)] ${
+                  className={`font-[var(--font-quicksand)] ${
                     j === 0
                       ? "text-cyan font-semibold"
                       : j === path.length - 1 && p.finished
@@ -330,10 +331,13 @@ export default function GamePage({
         <ConfettiEffect />
         <div className="w-full max-w-2xl relative z-10">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-[var(--font-fredoka)] font-bold title-gradient mb-2">
+            <div className="mx-auto w-20 h-auto mb-3 opacity-90">
+              <Image src="/trophy.svg" alt="" width={100} height={120} className="w-full h-auto" />
+            </div>
+            <h1 className="text-5xl font-[var(--font-bangers)] tracking-wide title-gradient mb-2">
               Resultater!
             </h1>
-            <p className="text-foreground/50 font-[var(--font-fredoka)]">
+            <p className="text-foreground/50 font-[var(--font-quicksand)]">
               <span className="text-cyan">{gameState.startArticleTitle}</span>
               <span className="text-foreground/30 mx-2">&rarr;</span>
               <span className="text-lime">{gameState.endArticleTitle}</span>
@@ -357,7 +361,7 @@ export default function GamePage({
           <div className="flex gap-3 mt-8 justify-center">
             <button
               onClick={() => router.push("/")}
-              className="btn-party text-white font-[var(--font-fredoka)] font-semibold py-3 px-8 rounded-xl text-lg"
+              className="btn-party text-white font-[var(--font-bangers)] text-xl tracking-wide py-3 px-8 rounded-xl"
             >
               Spill igjen!
             </button>
@@ -381,8 +385,8 @@ export default function GamePage({
       <div className="h-screen flex flex-col">
         <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
           <div className="flex-1 min-w-0">
-            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Rute</div>
-            <div className="font-[var(--font-fredoka)] font-medium">
+            <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">Rute</div>
+            <div className="font-[var(--font-quicksand)] font-medium">
               <span className="text-cyan">
                 {gameState.startArticleTitle}
               </span>
@@ -394,17 +398,17 @@ export default function GamePage({
           </div>
           <div className="text-center px-4">
             <div className="text-xl font-[var(--font-space-mono)] text-pink font-bold">{formatTime(elapsed)}</div>
-            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">tid</div>
+            <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">tid</div>
           </div>
           <div className="text-center px-4">
             <div className="text-xl font-[var(--font-space-mono)] text-lime font-bold">
               {gamePlayers.filter((p) => p.finished).length}/{playerCount}
             </div>
-            <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">i mal</div>
+            <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">i mal</div>
           </div>
           <button
             onClick={handleEndGame}
-            className="bg-red-500/20 border border-red-500/50 text-red-300 rounded-xl px-4 py-2 text-sm hover:bg-red-500/30 transition-colors font-[var(--font-fredoka)]"
+            className="bg-red-500/20 border border-red-500/50 text-red-300 rounded-xl px-4 py-2 text-sm hover:bg-red-500/30 transition-colors font-[var(--font-quicksand)]"
           >
             Avslutt
           </button>
@@ -438,9 +442,9 @@ export default function GamePage({
     <div className="h-screen flex flex-col">
       <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
         <div className="flex-1 min-w-0">
-          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Du leser</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">Du leser</div>
           <div
-            className="font-[var(--font-fredoka)] font-medium truncate"
+            className="font-[var(--font-quicksand)] font-medium truncate"
             dangerouslySetInnerHTML={{ __html: articleTitle }}
           />
         </div>
@@ -448,15 +452,15 @@ export default function GamePage({
           <div className="text-3xl font-[var(--font-space-mono)] font-bold text-pink">
             {clickCount}
           </div>
-          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">klikk</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">klikk</div>
         </div>
         <div className="text-center px-4">
           <div className="text-lg font-[var(--font-space-mono)] text-cyan">{formatTime(elapsed)}</div>
-          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">tid</div>
+          <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">tid</div>
         </div>
         <div className="text-right flex-1 min-w-0">
-          <div className="text-xs text-foreground/40 font-[var(--font-fredoka)]">Mal</div>
-          <div className="font-[var(--font-fredoka)] font-semibold text-lime truncate">
+          <div className="text-xs text-foreground/40 font-[var(--font-quicksand)]">Mal</div>
+          <div className="font-[var(--font-quicksand)] font-semibold text-lime truncate">
             {gameState.endArticleTitle}
           </div>
         </div>
@@ -464,13 +468,13 @@ export default function GamePage({
 
       {finished && (
         <div className="bg-lime/10 border-b border-lime/30 px-4 py-3 text-center">
-          <span className="text-lime font-[var(--font-fredoka)] font-bold text-xl">
+          <span className="text-lime font-[var(--font-bangers)] text-2xl tracking-wide">
             Du fant malet!
           </span>
           <span className="text-foreground/60 ml-3 font-[var(--font-space-mono)]">
             {clickCount} klikk &middot; {formatTime(elapsed)}
           </span>
-          <span className="text-foreground/30 ml-3 text-sm font-[var(--font-fredoka)]">
+          <span className="text-foreground/30 ml-3 text-sm font-[var(--font-quicksand)]">
             Venter pa de andre...
           </span>
         </div>
