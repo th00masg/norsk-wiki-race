@@ -81,8 +81,8 @@ export default function ArticleSearch({
         <label className="block text-xs text-foreground/35 mb-1 font-semibold uppercase tracking-wider">
           {label}
         </label>
-        <div className="flex items-center gap-2 bg-surface/40 border border-card-border rounded-xl px-4 py-2.5">
-          <span className="flex-1 font-semibold">{value.title}</span>
+        <div className="flex items-center gap-2 bg-surface/40 border border-card-border rounded-xl px-3 md:px-4 py-2.5">
+          <span className="flex-1 font-semibold text-sm md:text-base break-words min-w-0">{value.title}</span>
           <button
             onClick={() => {
               onSelect(null as unknown as { title: string; slug: string });
@@ -102,19 +102,19 @@ export default function ArticleSearch({
       <label className="block text-xs text-foreground/35 mb-1 font-semibold uppercase tracking-wider">
         {label}
       </label>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
           placeholder="Søk etter artikkel..."
-          className="flex-1 bg-surface/60 border border-card-border rounded-xl px-4 py-2.5 text-foreground placeholder-foreground/25 focus:outline-none focus:border-ring focus:shadow-[0_0_0_3px_rgba(42,63,107,0.3)] transition-all"
+          className="min-w-0 flex-1 bg-surface/60 border border-card-border rounded-xl px-3 md:px-4 py-2.5 text-sm md:text-base text-foreground placeholder-foreground/25 focus:outline-none focus:border-ring focus:shadow-[0_0_0_3px_rgba(42,63,107,0.3)] transition-all"
         />
         <button
           onClick={handleRandom}
           disabled={loadingRandom}
-          className="bg-surface/60 border border-card-border rounded-xl px-3 py-2.5 text-foreground/50 hover:border-orange hover:text-orange transition-colors text-sm shrink-0 disabled:opacity-30"
+          className="bg-surface/60 border border-card-border rounded-xl w-10 h-10 flex items-center justify-center text-foreground/50 hover:border-orange hover:text-orange transition-colors text-base shrink-0 disabled:opacity-30"
           title="Tilfeldig artikkel"
         >
           {loadingRandom ? "..." : "🎲"}
