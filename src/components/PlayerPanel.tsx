@@ -37,7 +37,7 @@ export default function PlayerPanel({
     >
       {/* Player header */}
       <div className="flex items-center gap-2 px-3 py-2.5 border-b border-card-border bg-surface/40 shrink-0">
-        <span className="font-[var(--font-bangers)] text-lg tracking-wide truncate flex-1 text-pink">
+        <span className="font-['Slackey'] text-lg tracking-wide truncate flex-1 text-pink">
           {name}
         </span>
         <span className="font-[var(--font-space-mono)] text-cyan font-bold text-lg">
@@ -60,7 +60,7 @@ export default function PlayerPanel({
           <div className="absolute inset-0 bg-lime/5 z-10 flex items-center justify-center backdrop-blur-[1px]">
             <div className="bg-card/95 rounded-xl px-5 py-4 text-center border border-lime/30">
               <div className="text-3xl mb-1">🏁</div>
-              <div className="text-lime font-[var(--font-bangers)] text-2xl tracking-wide">
+              <div className="text-lime font-['Slackey'] text-2xl tracking-wide">
                 I mal!
               </div>
               <div className="text-sm text-foreground/50 font-[var(--font-space-mono)]">

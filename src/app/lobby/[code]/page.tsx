@@ -217,7 +217,7 @@ export default function LobbyPage({
           <p className="text-red-400 mb-4">{error}</p>
           <button
             onClick={() => router.push("/")}
-            className="text-pink hover:underline font-[var(--font-quicksand)]"
+            className="text-pink hover:underline font-['Slackey']"
           >
             Tilbake til forsiden
           </button>
@@ -241,7 +241,7 @@ export default function LobbyPage({
         <FlyingEmojis emojis={flyingEmojis} />
         <div className="w-full max-w-xl">
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-[var(--font-bangers)] tracking-wide mb-3 title-gradient">
+            <h1 className="text-4xl font-['Slackey'] tracking-wide mb-3 title-gradient">
               Venteområdet
             </h1>
             <span className="lobby-code font-[var(--font-space-mono)] text-4xl tracking-[0.3em] text-pink font-bold">
@@ -250,7 +250,7 @@ export default function LobbyPage({
           </div>
 
           <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 mb-4">
-            <h2 className="text-xl font-[var(--font-bangers)] tracking-wide mb-3 text-cyan">
+            <h2 className="text-xl font-['Slackey'] tracking-wide mb-3 text-cyan">
               Spillere ({lobby.players.length})
             </h2>
             <div className="space-y-2">
@@ -278,10 +278,10 @@ export default function LobbyPage({
           <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 text-center">
             {lobby.startArticleTitle && lobby.endArticleTitle ? (
               <div>
-                <p className="text-foreground/40 mb-2 font-[var(--font-quicksand)]">
+                <p className="text-foreground/40 mb-2 font-['Slackey']">
                   Rute valgt:
                 </p>
-                <p className="text-lg font-[var(--font-quicksand)]">
+                <p className="text-lg font-['Slackey']">
                   <span className="text-cyan font-semibold">
                     {lobby.startArticleTitle}
                   </span>
@@ -292,7 +292,7 @@ export default function LobbyPage({
                 </p>
               </div>
             ) : (
-              <p className="text-foreground/40 font-[var(--font-quicksand)]">
+              <p className="text-foreground/40 font-['Slackey']">
                 Venter på at verten velger artikler...
               </p>
             )}
@@ -300,7 +300,7 @@ export default function LobbyPage({
 
           {/* Emoji picker */}
           <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-4 mt-4 text-center">
-            <p className="text-foreground/40 text-xs mb-2 font-[var(--font-quicksand)]">
+            <p className="text-foreground/40 text-xs mb-2 font-['Slackey']">
               Send en reaksjon!
             </p>
             <EmojiPicker onSend={handleSendEmoji} disabled={emojiCooldown} />
@@ -318,7 +318,7 @@ export default function LobbyPage({
       {/* Header: title + code on left, QR on right */}
       <div className="w-full max-w-5xl flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-6xl font-[var(--font-bangers)] tracking-wide mb-3 title-gradient">
+          <h1 className="text-6xl font-['Slackey'] tracking-wide mb-3 title-gradient">
             Venteområdet
           </h1>
           <div className="flex items-center gap-3 mb-1">
@@ -327,12 +327,12 @@ export default function LobbyPage({
             </span>
             <button
               onClick={copyCode}
-              className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-[var(--font-quicksand)]"
+              className="text-sm bg-card/80 border border-card-border rounded-xl px-3 py-1.5 hover:bg-pink/20 hover:border-pink/50 transition-all font-['Slackey']"
             >
               {copied ? "Kopiert!" : "Kopier"}
             </button>
           </div>
-          <p className="text-foreground/40 text-lg font-[var(--font-quicksand)]">
+          <p className="text-foreground/40 text-lg font-['Slackey']">
             Del koden med de andre gjestene!
           </p>
         </div>
@@ -342,7 +342,7 @@ export default function LobbyPage({
             alt="QR-kode til spillet"
             className="w-48 h-48 rounded-xl border-2 border-card-border"
           />
-          <p className="text-foreground/30 text-xs mt-1 font-[var(--font-quicksand)]">
+          <p className="text-foreground/30 text-xs mt-1 font-['Slackey']">
             Skann for å bli med!
           </p>
         </div>
@@ -358,7 +358,7 @@ export default function LobbyPage({
       <div className="w-full max-w-5xl grid grid-cols-3 gap-4">
         {/* Column 1: Spillere */}
         <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6">
-          <h2 className="text-xl font-[var(--font-bangers)] tracking-wide mb-3 text-cyan">
+          <h2 className="text-xl font-['Slackey'] tracking-wide mb-3 text-cyan">
             Spillere ({lobby.players.length})
           </h2>
           <div className="space-y-2">
@@ -382,7 +382,7 @@ export default function LobbyPage({
 
         {/* Column 2: Artikler */}
         <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6">
-          <h2 className="text-xl font-[var(--font-bangers)] tracking-wide mb-3 text-pink">
+          <h2 className="text-xl font-['Slackey'] tracking-wide mb-3 text-pink">
             Velg artikler
           </h2>
           <ArticleSearch
@@ -408,18 +408,18 @@ export default function LobbyPage({
           <button
             onClick={handleStart}
             disabled={!startArticle || !endArticle || starting}
-            className="w-full btn-go py-8 rounded-2xl text-4xl font-[var(--font-bangers)] tracking-wider disabled:opacity-30"
+            className="w-full btn-go py-8 rounded-2xl text-4xl font-['Slackey'] tracking-wider disabled:opacity-30"
           >
             {starting ? "Starter..." : "KJØR!"}
           </button>
           {(!startArticle || !endArticle) && (
-            <p className="text-foreground/30 text-sm mt-3 font-[var(--font-quicksand)] text-center">
+            <p className="text-foreground/30 text-sm mt-3 font-['Slackey'] text-center">
               Velg start- og målartikkel først
             </p>
           )}
           <button
             onClick={() => setHostPlaying((v) => !v)}
-            className="mt-4 flex items-center gap-2 text-sm font-[var(--font-quicksand)] text-foreground/60 hover:text-foreground transition-colors"
+            className="mt-4 flex items-center gap-2 text-sm font-['Slackey'] text-foreground/60 hover:text-foreground transition-colors"
           >
             <div className={`w-10 h-5 rounded-full transition-colors relative ${hostPlaying ? "bg-lime/60" : "bg-card-border"}`}>
               <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${hostPlaying ? "left-5" : "left-0.5"}`} />

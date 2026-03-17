@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Bangers, Quicksand, Space_Mono } from "next/font/google";
+import { Quicksand, Space_Mono } from "next/font/google";
 import "./globals.css";
-
-const bangers = Bangers({
-  variable: "--font-bangers",
-  subsets: ["latin", "latin-ext"],
-  weight: "400",
-});
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -20,8 +14,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mathias' Wiki Race",
-  description: "Bursdags-Wiki-Race! Kappkjor gjennom Wikipedia!",
+  title: "Wiki Race",
+  description: "Kappkjor gjennom Wikipedia!",
 };
 
 export default function RootLayout({
@@ -31,8 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Slackey&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${bangers.variable} ${quicksand.variable} ${spaceMono.variable} antialiased`}
+        className={`${quicksand.variable} ${spaceMono.variable} antialiased`}
       >
         {children}
       </body>
