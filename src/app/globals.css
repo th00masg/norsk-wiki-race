@@ -51,19 +51,9 @@ body {
   min-height: 100vh;
 }
 
-/* ===== Title gradient ===== */
+/* ===== Title color ===== */
 .title-gradient {
-  background: linear-gradient(135deg, #E84538 0%, #E8A817 30%, #2B6CB0 60%, #2D8B4E 100%);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 6s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  color: #E84538;
 }
 
 /* ===== Solid card styles ===== */
