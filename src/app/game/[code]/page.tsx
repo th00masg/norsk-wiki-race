@@ -25,6 +25,7 @@ interface GameState {
   endArticle: string | null;
   endArticleTitle: string | null;
   gameStartTime: number | null;
+  timeLimit: number;
   hostPlaying: boolean;
 }
 
@@ -97,17 +98,17 @@ function ResultCard({
           <div className="text-sm text-foreground/40">
             {p.finished ? (
               <>
-                <span className="text-pink font-[var(--font-space-mono)]">
-                  {p.clickCount} klikk
-                </span>
                 {p.finishTime && (
-                  <span className="text-cyan font-[var(--font-space-mono)] ml-2">
+                  <span className="text-cyan font-[var(--font-space-mono)] font-bold">
                     {formatTime(Math.floor(p.finishTime / 1000))}
                   </span>
                 )}
+                <span className="text-pink font-[var(--font-space-mono)] ml-2">
+                  {p.clickCount} klikk
+                </span>
               </>
             ) : (
-              <span className="text-foreground/20">Ga seg</span>
+              <span className="text-foreground/20">Ikke i mål</span>
             )}
           </div>
         </div>
@@ -238,6 +239,11 @@ export default function GamePage({
     return () => clearInterval(interval);
   }, []);
 
+  const timeLimit = gameState?.timeLimit || 10 * 60 * 1000;
+  const remaining = gameState?.gameStartTime
+    ? Math.max(0, Math.floor((timeLimit - (Date.now() - gameState.gameStartTime)) / 1000))
+    : Math.floor(timeLimit / 1000);
+
   useEffect(() => {
     if (!gameState?.gameStartTime || finished || gameState.state === "finished")
       return;
@@ -299,8 +305,9 @@ export default function GamePage({
     if (a.finished && !b.finished) return -1;
     if (!a.finished && b.finished) return 1;
     if (a.finished && b.finished) {
-      if (a.clickCount !== b.clickCount) return a.clickCount - b.clickCount;
-      return (a.finishTime || 0) - (b.finishTime || 0);
+      // Fastest time wins, clicks as tiebreaker
+      if ((a.finishTime || 0) !== (b.finishTime || 0)) return (a.finishTime || 0) - (b.finishTime || 0);
+      return a.clickCount - b.clickCount;
     }
     return a.clickCount - b.clickCount;
   });
@@ -397,8 +404,10 @@ export default function GamePage({
             </div>
           </div>
           <div className="text-center px-4">
-            <div className="text-xl font-[var(--font-space-mono)] text-pink font-bold">{formatTime(elapsed)}</div>
-            <div className="text-xs text-foreground/40 font-['Slackey']">tid</div>
+            <div className={`text-xl font-[var(--font-space-mono)] font-bold ${remaining <= 60 ? "text-red-500" : remaining <= 120 ? "text-orange" : "text-pink"}`}>
+              {formatTime(remaining)}
+            </div>
+            <div className="text-xs text-foreground/40 font-['Slackey']">gjenstår</div>
           </div>
           <div className="text-center px-4">
             <div className="text-xl font-[var(--font-space-mono)] text-lime font-bold">
@@ -455,8 +464,10 @@ export default function GamePage({
           <div className="text-xs text-foreground/40 font-['Slackey']">klikk</div>
         </div>
         <div className="text-center px-4">
-          <div className="text-lg font-[var(--font-space-mono)] text-cyan">{formatTime(elapsed)}</div>
-          <div className="text-xs text-foreground/40 font-['Slackey']">tid</div>
+          <div className={`text-lg font-[var(--font-space-mono)] font-bold ${remaining <= 60 ? "text-red-500" : remaining <= 120 ? "text-orange" : "text-cyan"}`}>
+            {formatTime(remaining)}
+          </div>
+          <div className="text-xs text-foreground/40 font-['Slackey']">gjenstår</div>
         </div>
         <div className="text-right flex-1 min-w-0">
           <div className="text-xs text-foreground/40 font-['Slackey']">Mal</div>

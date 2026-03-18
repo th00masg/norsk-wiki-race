@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLobby } from "@/lib/redis";
+import { getLobby, setLobby } from "@/lib/redis";
 
 export async function GET(
   _request: NextRequest,
@@ -10,6 +10,17 @@ export async function GET(
 
   if (!lobby) {
     return NextResponse.json({ error: "Lobby ikke funnet" }, { status: 404 });
+  }
+
+  // Auto-end game if time limit exceeded
+  const timeLimit = lobby.timeLimit || 10 * 60 * 1000;
+  if (
+    lobby.state === "playing" &&
+    lobby.gameStartTime &&
+    Date.now() - lobby.gameStartTime > timeLimit
+  ) {
+    lobby.state = "finished";
+    await setLobby(lobby);
   }
 
   return NextResponse.json({
@@ -29,6 +40,7 @@ export async function GET(
     endArticle: lobby.endArticle,
     endArticleTitle: lobby.endArticleTitle,
     gameStartTime: lobby.gameStartTime,
+    timeLimit: lobby.timeLimit || 10 * 60 * 1000,
     hostPlaying: lobby.hostPlaying ?? false,
   });
 }

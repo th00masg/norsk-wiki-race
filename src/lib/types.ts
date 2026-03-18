@@ -26,6 +26,7 @@ export interface Lobby {
   startArticleTitle: string | null;
   endArticleTitle: string | null;
   gameStartTime: number | null;
+  timeLimit: number; // milliseconds
   hostPlaying?: boolean;
   emojis?: EmojiReaction[];
 }

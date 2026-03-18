@@ -35,6 +35,19 @@ export async function POST(
     );
   }
 
+  // Check time limit
+  const timeLimit = lobby.timeLimit || 10 * 60 * 1000;
+  if (lobby.gameStartTime && Date.now() - lobby.gameStartTime > timeLimit) {
+    lobby.state = "finished";
+    await setLobby(lobby);
+    return NextResponse.json({
+      clickCount: player.clickCount,
+      finished: false,
+      allFinished: true,
+      timeUp: true,
+    });
+  }
+
   player.clickCount += 1;
   player.currentArticle = article;
   if (!player.path) player.path = [];

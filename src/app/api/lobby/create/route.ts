@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     startArticleTitle: null,
     endArticleTitle: null,
     gameStartTime: null,
+    timeLimit: 10 * 60 * 1000,
   };
 
   await setLobby(lobby);

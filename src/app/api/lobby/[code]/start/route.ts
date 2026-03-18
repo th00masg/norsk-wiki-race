@@ -29,6 +29,7 @@ export async function POST(
 
   lobby.state = "playing";
   lobby.gameStartTime = Date.now();
+  lobby.timeLimit = 10 * 60 * 1000; // 10 minutes
 
   // Set players to start article (skip host unless hostPlaying)
   for (const player of lobby.players) {
