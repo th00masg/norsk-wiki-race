@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, use } from "react";
 import { useRouter } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 import ArticleSearch from "@/components/ArticleSearch";
 import { Lobby, EmojiReaction } from "@/lib/types";
 
@@ -247,6 +248,21 @@ export default function LobbyPage({
             <span className="lobby-code font-[var(--font-space-mono)] text-3xl md:text-4xl tracking-[0.2em] md:tracking-[0.3em] text-pink font-bold">
               {code.toUpperCase()}
             </span>
+            <div className="mt-3">
+              <div className="bg-white p-2 rounded-xl border-2 border-card-border inline-block">
+                <QRCodeSVG
+                  value={`${typeof window !== "undefined" ? window.location.origin : ""}/join/${code.toUpperCase()}`}
+                  size={96}
+                  bgColor="#ffffff"
+                  fgColor="#1a1a2e"
+                  level="M"
+                  className="w-20 h-20 md:w-24 md:h-24"
+                />
+              </div>
+              <p className="text-foreground/30 text-xs mt-1 font-['Slackey']">
+                Skann for å bli med!
+              </p>
+            </div>
           </div>
 
           <div className="bg-card/80 border border-card-border rounded-2xl p-4 md:p-6 mb-3">
@@ -336,13 +352,18 @@ export default function LobbyPage({
             Del koden med de andre gjestene!
           </p>
         </div>
-        <div className="text-center shrink-0 hidden md:block">
-          <img
-            src="/qr.png"
-            alt="QR-kode til spillet"
-            className="w-32 h-32 lg:w-48 lg:h-48 rounded-xl border-2 border-card-border"
-          />
-          <p className="text-foreground/30 text-xs mt-1 font-['Slackey']">
+        <div className="text-center shrink-0">
+          <div className="bg-white p-2 rounded-xl border-2 border-card-border inline-block">
+            <QRCodeSVG
+              value={`${typeof window !== "undefined" ? window.location.origin : ""}/join/${code.toUpperCase()}`}
+              size={128}
+              bgColor="#ffffff"
+              fgColor="#1a1a2e"
+              level="M"
+              className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40"
+            />
+          </div>
+          <p className="text-foreground/30 text-xs mt-1.5 font-['Slackey']">
             Skann for å bli med!
           </p>
         </div>
