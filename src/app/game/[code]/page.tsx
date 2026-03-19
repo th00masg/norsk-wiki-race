@@ -169,6 +169,7 @@ export default function GamePage({
   const [clickCount, setClickCount] = useState(0);
   const [finished, setFinished] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  const [resetting, setResetting] = useState(false);
   const articleContainerRef = useRef<HTMLDivElement>(null);
   const codeRef = useRef(code);
 
@@ -231,6 +232,10 @@ export default function GamePage({
       try {
         const res = await fetch(`/api/game/${codeRef.current}/state`);
         const data: GameState = await res.json();
+        if (data.state === "waiting") {
+          router.push(`/lobby/${codeRef.current}`);
+          return;
+        }
         setGameState(data);
       } catch {
         // ignore
@@ -293,6 +298,26 @@ export default function GamePage({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ playerId: pid }),
     });
+  }
+
+  async function handleNewRound() {
+    const pid = sessionStorage.getItem("playerId");
+    if (!pid || resetting) return;
+    setResetting(true);
+    try {
+      const res = await fetch(`/api/lobby/${code}/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: pid }),
+      });
+      if (res.ok) {
+        router.push(`/lobby/${code}`);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setResetting(false);
+    }
   }
 
   function formatTime(seconds: number) {
@@ -365,12 +390,25 @@ export default function GamePage({
             ))}
           </div>
 
-          <div className="flex gap-3 mt-8 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 mt-8 justify-center items-center">
+            {isHost ? (
+              <button
+                onClick={handleNewRound}
+                disabled={resetting}
+                className="btn-party text-white font-['Slackey'] text-xl tracking-wide py-3 px-8 rounded-xl disabled:opacity-50"
+              >
+                {resetting ? "Tilbakestiller..." : "Ny runde!"}
+              </button>
+            ) : (
+              <p className="text-foreground/40 font-['Slackey'] text-sm">
+                Venter på at verten starter ny runde...
+              </p>
+            )}
             <button
               onClick={() => router.push("/")}
-              className="btn-party text-white font-['Slackey'] text-xl tracking-wide py-3 px-8 rounded-xl"
+              className="bg-card/80 border border-card-border text-foreground/60 hover:text-foreground font-['Slackey'] text-base tracking-wide py-2.5 px-6 rounded-xl transition-colors"
             >
-              Spill igjen!
+              Forlat spillet
             </button>
           </div>
         </div>
