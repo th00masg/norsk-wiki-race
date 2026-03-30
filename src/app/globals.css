@@ -167,12 +167,23 @@ body {
 .wiki-content {
   background: #FAFBFC;
   color: #1a1a2e;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 0.75rem;
-  line-height: 1.7;
-  font-size: 0.9rem;
+  line-height: 1.6;
+  font-size: 0.85rem;
   font-family: "Georgia", "Times New Roman", serif;
   border: 1px solid #e2e8f0;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .wiki-content {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
 }
 
 .wiki-content a[data-wiki-slug] {
@@ -202,17 +213,28 @@ body {
 }
 
 .wiki-content img { max-width: 100%; height: auto; border-radius: 4px; }
-.wiki-content table { border-collapse: collapse; margin: 0.5rem 0; }
+.wiki-content table { border-collapse: collapse; margin: 0.5rem 0; max-width: 100%; display: block; overflow-x: auto; }
 
 .wiki-content .infobox {
-  float: right;
-  margin: 0 0 1rem 1rem;
-  max-width: 300px;
+  float: none;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 1rem 0;
   border: 1px solid #e2e8f0;
   padding: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   background: #F8FAFC;
   border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .wiki-content .infobox {
+    float: right;
+    max-width: 300px;
+    margin: 0 0 1rem 1rem;
+    font-size: 0.85rem;
+  }
 }
 
 .wiki-content .infobox td,

@@ -487,31 +487,38 @@ export default function GamePage({
   // ========== PLAYER VIEW ==========
   return (
     <div className="h-screen flex flex-col">
-      <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-4 py-3 flex items-center gap-4 shrink-0">
-        <div className="flex-1 min-w-0">
-          <div className="text-xs text-foreground/40 font-['Slackey']">Du leser</div>
-          <div
-            className="font-['Slackey'] font-medium truncate"
-            dangerouslySetInnerHTML={{ __html: articleTitle }}
-          />
-        </div>
-        <div className="text-center px-4">
-          <div className="text-3xl font-[var(--font-space-mono)] font-bold text-pink">
-            {clickCount}
+      <div className="bg-card/80 backdrop-blur-sm border-b border-card-border px-2 py-2 md:px-4 md:py-3 shrink-0">
+        {/* Top row: click count, timer, target */}
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex-1 min-w-0 hidden md:block">
+            <div className="text-xs text-foreground/40 font-['Slackey']">Du leser</div>
+            <div
+              className="font-['Slackey'] font-medium truncate"
+              dangerouslySetInnerHTML={{ __html: articleTitle }}
+            />
           </div>
-          <div className="text-xs text-foreground/40 font-['Slackey']">klikk</div>
-        </div>
-        <div className="text-center px-4">
-          <div className={`text-lg font-[var(--font-space-mono)] font-bold ${remaining <= 60 ? "text-red-500" : remaining <= 120 ? "text-orange" : "text-cyan"}`}>
-            {formatTime(remaining)}
+          <div className="text-center px-2 md:px-4">
+            <div className="text-2xl md:text-3xl font-[var(--font-space-mono)] font-bold text-pink">
+              {clickCount}
+            </div>
+            <div className="text-[10px] md:text-xs text-foreground/40 font-['Slackey']">klikk</div>
           </div>
-          <div className="text-xs text-foreground/40 font-['Slackey']">gjenstår</div>
-        </div>
-        <div className="text-right flex-1 min-w-0">
-          <div className="text-xs text-foreground/40 font-['Slackey']">Mal</div>
-          <div className="font-['Slackey'] font-semibold text-lime truncate">
-            {gameState.endArticleTitle}
+          <div className="text-center px-2 md:px-4">
+            <div className={`text-base md:text-lg font-[var(--font-space-mono)] font-bold ${remaining <= 60 ? "text-red-500" : remaining <= 120 ? "text-orange" : "text-cyan"}`}>
+              {formatTime(remaining)}
+            </div>
+            <div className="text-[10px] md:text-xs text-foreground/40 font-['Slackey']">gjenstår</div>
           </div>
+          <div className="text-right flex-1 min-w-0">
+            <div className="text-[10px] md:text-xs text-foreground/40 font-['Slackey']">Mål</div>
+            <div className="font-['Slackey'] font-semibold text-lime truncate text-sm md:text-base">
+              {gameState.endArticleTitle}
+            </div>
+          </div>
+        </div>
+        {/* Mobile: current article title row */}
+        <div className="md:hidden mt-1 truncate text-xs text-foreground/50 font-['Slackey']">
+          Du leser: <span className="text-foreground/80" dangerouslySetInnerHTML={{ __html: articleTitle }} />
         </div>
       </div>
 
@@ -531,7 +538,7 @@ export default function GamePage({
 
       <div
         ref={articleContainerRef}
-        className="flex-1 overflow-y-auto p-4"
+        className="flex-1 overflow-y-auto p-2 md:p-4"
       >
         <WikiArticle
           html={articleHtml}
