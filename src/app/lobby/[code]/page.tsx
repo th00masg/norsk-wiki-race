@@ -77,6 +77,7 @@ export default function LobbyPage({
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
   const [hostPlaying, setHostPlaying] = useState(false);
+  const [selectedMinutes, setSelectedMinutes] = useState(10);
   const [flyingEmojis, setFlyingEmojis] = useState<FlyingEmoji[]>([]);
   const [emojiCooldown, setEmojiCooldown] = useState(false);
 
@@ -162,9 +163,26 @@ export default function LobbyPage({
         endArticle: endArticle.slug,
         endTitle: endArticle.title,
         hostPlaying,
+        timeLimit: selectedMinutes * 60 * 1000,
       }),
     }).catch(() => {});
-  }, [startArticle, endArticle, playerId, isHost, code, hostPlaying]);
+  }, [startArticle, endArticle, playerId, isHost, code, hostPlaying, selectedMinutes]);
+
+  // Sync timeLimit/hostPlaying even before articles are selected
+  useEffect(() => {
+    if (startArticle && endArticle) return; // Already handled above
+    if (!playerId || !isHost) return;
+
+    fetch(`/api/lobby/${code}/config`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerId,
+        hostPlaying,
+        timeLimit: selectedMinutes * 60 * 1000,
+      }),
+    }).catch(() => {});
+  }, [selectedMinutes, hostPlaying, playerId, isHost, code, startArticle, endArticle]);
 
   async function handleStart() {
     if (!playerId || starting) return;
@@ -312,6 +330,9 @@ export default function LobbyPage({
                 Venter på at verten velger artikler...
               </p>
             )}
+            <p className="text-foreground/30 text-xs mt-2 font-['Slackey']">
+              Tidsfrist: {Math.round(lobby.timeLimit / 60000)} min
+            </p>
           </div>
 
           {/* Emoji picker */}
@@ -426,6 +447,26 @@ export default function LobbyPage({
 
         {/* Start (third on mobile) */}
         <div className="glow-pink border border-card-border rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center order-3">
+          <div className="w-full mb-4">
+            <label className="text-xs md:text-sm font-['Slackey'] text-white/70 block mb-2 text-center">
+              Minutter per runde
+            </label>
+            <div className="flex gap-1.5 justify-center flex-wrap">
+              {[2, 5, 10, 15, 20, 30].map((min) => (
+                <button
+                  key={min}
+                  onClick={() => setSelectedMinutes(min)}
+                  className={`px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl text-sm md:text-base font-['Slackey'] transition-all ${
+                    selectedMinutes === min
+                      ? "bg-pink text-white shadow-lg shadow-pink/30"
+                      : "bg-white/10 text-white/60 hover:bg-white/20"
+                  }`}
+                >
+                  {min}
+                </button>
+              ))}
+            </div>
+          </div>
           <button
             onClick={handleStart}
             disabled={!startArticle || !endArticle || starting}

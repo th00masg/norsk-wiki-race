@@ -6,7 +6,7 @@ export async function POST(
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
-  const { playerId, startArticle, startTitle, endArticle, endTitle, hostPlaying } =
+  const { playerId, startArticle, startTitle, endArticle, endTitle, hostPlaying, timeLimit } =
     await request.json();
 
   const lobby = await getLobby(code.toUpperCase());
@@ -21,12 +21,19 @@ export async function POST(
     );
   }
 
-  lobby.startArticle = startArticle;
-  lobby.startArticleTitle = startTitle;
-  lobby.endArticle = endArticle;
-  lobby.endArticleTitle = endTitle;
+  if (startArticle !== undefined) {
+    lobby.startArticle = startArticle;
+    lobby.startArticleTitle = startTitle;
+  }
+  if (endArticle !== undefined) {
+    lobby.endArticle = endArticle;
+    lobby.endArticleTitle = endTitle;
+  }
   if (hostPlaying !== undefined) {
     lobby.hostPlaying = hostPlaying;
+  }
+  if (timeLimit !== undefined) {
+    lobby.timeLimit = timeLimit;
   }
 
   await setLobby(lobby);
